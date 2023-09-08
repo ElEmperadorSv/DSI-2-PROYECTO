@@ -46,9 +46,7 @@ btnEnviarCorreo.addEventListener('click', async (e) => {
         btnVerificarCodigo.classList.remove('d-none');
         btnEnviarCorreo.classList.add('d-none');
     } else {
-        errorControl.innerText = jsonData.msg;
-        successControl.classList.add('d-none');
-        errorControl.classList.remove('d-none');
+        mostrarError(jsonData.msg);
     }
 
     btnEnviarCorreo.disabled = false;
@@ -82,9 +80,7 @@ btnVerificarCodigo.addEventListener('click', async () => {
         newPasswordSection.classList.remove('d-none');
         btnActualizarClave.classList.remove('d-none');
     } else {
-        errorControl.innerText = jsonData.msg;
-        successControl.classList.add('d-none');
-        errorControl.classList.remove('d-none');
+        mostrarError(jsonData.msg);
     }
 });
 

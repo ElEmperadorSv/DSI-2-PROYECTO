@@ -34,7 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtUpdate->bind_param("ss", $finalCode, $username);
         $resultUpdate = $stmtUpdate->execute();
         if ($resultUpdate == 1) {
-            send($data['correo'], $finalCode);
+            $mailResponse = send($data['correo'], $finalCode);
+            // echo $mailResponse;
             echo (json_encode($response));
         }
     } else {
@@ -62,7 +63,7 @@ function send($mail, $code)
         <strong>$code</strong>
         "
     );
-    $sendgrid = new \SendGrid('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');
+    $sendgrid = new \SendGrid('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');
     try {
         $response = $sendgrid->send($email);
         return $response->statusCode();

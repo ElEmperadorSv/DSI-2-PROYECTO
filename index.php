@@ -54,6 +54,9 @@ session_start();
                                             <input class="form-check-input" type="checkbox" id="showPassword">
                                             <label class="form-check-label" for="showPassword">Mostrar contraseña</label>
                                         </div>
+                                        <div class="form-group mt-2">
+                                            <a href="./Vista/recuperacion_clave.php">He olvidado mi contraseña</a>
+                                        </div>
                                         <div class="d-flex align-items-center justify-content-center mt-4 mb-0">
                                             <!--<a class="small" href="password.html">¿Olvidaste tu contraseña?</a>-->
                                             <button type="submit" class="btn btn-primary">Acceder</button>

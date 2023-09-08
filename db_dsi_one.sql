@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-06-2023 a las 05:12:06
--- Versión del servidor: 10.4.24-MariaDB
--- Versión de PHP: 8.1.6
+-- Tiempo de generación: 08-09-2023 a las 23:27:51
+-- Versión del servidor: 10.4.27-MariaDB
+-- Versión de PHP: 8.1.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -36,7 +36,7 @@ CREATE TABLE `clientes_dsi` (
   `telefono` varchar(10) NOT NULL,
   `email` varchar(30) NOT NULL,
   `direccion` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `clientes_dsi`
@@ -73,7 +73,7 @@ CREATE TABLE `creditos_dsi` (
   `interes` decimal(10,2) DEFAULT NULL,
   `monto_total` decimal(10,2) DEFAULT NULL,
   `monto_pendiente` decimal(10,2) DEFAULT 0.00
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `creditos_dsi`
@@ -98,7 +98,7 @@ CREATE TABLE `pagos_dsi` (
   `fecha_pago` date DEFAULT NULL,
   `monto_pago` decimal(10,2) DEFAULT NULL,
   `monto_pendiente` decimal(10,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `pagos_dsi`
@@ -123,18 +123,20 @@ INSERT INTO `pagos_dsi` (`id`, `num_credito`, `dui`, `nombre_completo`, `fecha_p
 CREATE TABLE `usuarios_dsi` (
   `id` int(11) NOT NULL,
   `username` varchar(15) NOT NULL,
-  `password` varchar(25) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `password` varchar(25) NOT NULL,
+  `correo` varchar(100) NOT NULL DEFAULT '',
+  `codigo_recuperacion` varchar(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios_dsi`
 --
 
-INSERT INTO `usuarios_dsi` (`id`, `username`, `password`) VALUES
-(1, 'hgarcia', 'GB15026'),
-(2, 'rongonza', 'AG00026'),
-(3, 'jenherrera', 'HR08032'),
-(4, 'dangarcia', 'GT19011');
+INSERT INTO `usuarios_dsi` (`id`, `username`, `password`, `correo`, `codigo_recuperacion`) VALUES
+(1, 'hgarcia', 'GB15026', 'gb15026@ues.edu.sv', NULL),
+(2, 'rongonza', 'AG00026', 'ag00026@ues.edu.sv', NULL),
+(3, 'jenherrera', '123456', 'hr08032@ues.edu.sv', 'fcda5e'),
+(4, 'dangarcia', 'GT19011', 'gt19011@ues.edu.sv', NULL);
 
 --
 -- Índices para tablas volcadas

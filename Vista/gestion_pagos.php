@@ -254,146 +254,120 @@ if (isset($_POST['submitGuardar'])) {
                 </div>
             </main>
 
-            <footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid px-4">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; DSI ONE SA de CV 2023</div>
-                        <div>
-                            <a href="#">Política de privacidad</a>
-                            &middot;
-                            <a href="#">Términos &amp; condiciones</a>
+            <!-- Agregar Pago Modal -->
+            <div class="modal fade" id="addClienteModal" tabindex="-1" aria-labelledby="addClienteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h5 class="modal-title" id="addClienteModalLabel">Realizar Pago</h5>
+                            <form method="POST" action="">
+                                <div class="mb-3">
+                                    <input type="hidden" name="num_credito" value="<?php echo $numCredito; ?>">
+                                </div>
+                                <div class="mb-3">
+                                    <input type="hidden" name="nombre" value="<?php echo $nombre; ?>">
+                                </div>
+                                <div class="mb-3">
+                                    <input type="hidden" name="dui" value="<?php echo $dui; ?>">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fecha_pago" class="form-label">Fecha de Pago:</label>
+                                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="monto_pago" class="form-label">Monto del Pago:</label>
+                                    <input type="number" step="0.01" name="monto_pago" id="monto_pago" class="form-control" required>
+                                </div>
+                                <input type="hidden" name="monto_pendiente" value="<?php echo $montoPendiente; ?>">
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary" name="submitGuardar">Realizar Pago</button>
+                                </div>
+                            </form>
+                        <?php endif; ?>
                         </div>
                     </div>
                 </div>
-            </footer>
-        </div>
-    </div>
-
-    <!-- Agregar Pago Modal -->
-    <div class="modal fade" id="addClienteModal" tabindex="-1" aria-labelledby="addClienteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h5 class="modal-title" id="addClienteModalLabel">Realizar Pago</h5>
-                    <form method="POST" action="">
-                        <div class="mb-3">
-                            <input type="hidden" name="num_credito" value="<?php echo $numCredito; ?>">
-                        </div>
-                        <div class="mb-3">
-                            <input type="hidden" name="nombre" value="<?php echo $nombre; ?>">
-                        </div>
-                        <div class="mb-3">
-                            <input type="hidden" name="dui" value="<?php echo $dui; ?>">
-                        </div>
-                        <div class="mb-3">
-                            <label for="fecha_pago" class="form-label">Fecha de Pago:</label>
-                            <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="monto_pago" class="form-label">Monto del Pago:</label>
-                            <input type="number" step="0.01" name="monto_pago" id="monto_pago" class="form-control" required>
-                        </div>
-                        <input type="hidden" name="monto_pendiente" value="<?php echo $montoPendiente; ?>">
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary" name="submitGuardar">Realizar Pago</button>
-                        </div>
-                    </form>
-                <?php endif; ?>
-                </div>
             </div>
-        </div>
-    </div>
 
 
-    <script>
-        $(document).ready(function() {
-            $('#datatablesSimple').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-                }
-            });
-        });
-    </script>
-
-    <script>
-        function exportToExcel() {
-            // Crear un nuevo libro de Excel
-            var workbook = new ExcelJS.Workbook();
-            var worksheet = workbook.addWorksheet('Pagos Clientes');
-            // Agregar los títulos de las columnas
-            worksheet.columns = [{
-                    header: 'ID',
-                    key: 'id'
-                },
-                {
-                    header: '# Crédito',
-                    key: 'num_credito'
-                },
-                {
-                    header: 'DUI',
-                    key: 'dui'
-                },
-                {
-                    header: 'Nombre',
-                    key: 'nombre_completo'
-                },
-                {
-                    header: 'Fecha de Pago',
-                    key: 'fecha_pago'
-                },
-                {
-                    header: 'Monto Pago',
-                    key: 'monto_pago'
-                },
-                {
-                    header: 'Pago Realizado',
-                    key: 'monto_pendiente'
-                }
-            ];
-
-            // Obtener los datos de la tabla
-            var table = document.getElementById('datatablesSimple');
-            var rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-            // Agregar los datos a las filas del libro de Excel
-            for (var i = 0; i < rows.length; i++) {
-                var row = rows[i];
-                var rowData = [];
-
-                for (var j = 0; j < row.cells.length - 1; j++) {
-                    rowData.push(row.cells[j].textContent);
-                }
-
-                worksheet.addRow(rowData);
-            }
-
-            // Guardar el archivo Excel
-            workbook.xlsx.writeBuffer().then(function(data) {
-                var blob = new Blob([data], {
-                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            <script>
+                $(document).ready(function() {
+                    $('#datatablesSimple').DataTable({
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                        }
+                    });
                 });
-                saveAs(blob, 'pagos_clientes.xlsx');
-            });
-        }
-    </script>
+            </script>
+
+            <script>
+                function exportToExcel() {
+                    // Crear un nuevo libro de Excel
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Pagos Clientes');
+                    // Agregar los títulos de las columnas
+                    worksheet.columns = [{
+                            header: 'ID',
+                            key: 'id'
+                        },
+                        {
+                            header: '# Crédito',
+                            key: 'num_credito'
+                        },
+                        {
+                            header: 'DUI',
+                            key: 'dui'
+                        },
+                        {
+                            header: 'Nombre',
+                            key: 'nombre_completo'
+                        },
+                        {
+                            header: 'Fecha de Pago',
+                            key: 'fecha_pago'
+                        },
+                        {
+                            header: 'Monto Pago',
+                            key: 'monto_pago'
+                        },
+                        {
+                            header: 'Pago Realizado',
+                            key: 'monto_pendiente'
+                        }
+                    ];
+
+                    // Obtener los datos de la tabla
+                    var table = document.getElementById('datatablesSimple');
+                    var rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+                    // Agregar los datos a las filas del libro de Excel
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        var rowData = [];
+
+                        for (var j = 0; j < row.cells.length - 1; j++) {
+                            rowData.push(row.cells[j].textContent);
+                        }
+
+                        worksheet.addRow(rowData);
+                    }
+
+                    // Guardar el archivo Excel
+                    workbook.xlsx.writeBuffer().then(function(data) {
+                        var blob = new Blob([data], {
+                            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        });
+                        saveAs(blob, 'pagos_clientes.xlsx');
+                    });
+                }
+            </script>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/datatables.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Incluye estas líneas para exportar en excel -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <script src="https://unpkg.com/exceljs/dist/exceljs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.3/jspdf.umd.min.js"></script>
-
-    <script src="../Complementos/JS/script.js"></script>
-
-
+            <?php include '../Modelo/o_scrips_generales.php'; ?>
 </body>
 
 </html>

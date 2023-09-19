@@ -71,27 +71,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-    // Función para generar el número de crédito automático
-    function generarNumeroCredito($conn) {
-        $sql = "SELECT MAX(id) AS max_id FROM creditos_dsi";
-        $result = $conn->query($sql);
-        if ($result && $result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            $numeroActual = $row["max_id"];
-            if (!is_null($numeroActual)) {
-                $nuevoNumeroCredito = "DSI-" . str_pad($numeroActual + 1, 5, "0", STR_PAD_LEFT);
-                return $nuevoNumeroCredito;
-            } else {
-                return "DSI-00001";
-            }
+// Función para generar el número de crédito automático
+function generarNumeroCredito($conn)
+{
+    $sql = "SELECT MAX(id) AS max_id FROM creditos_dsi";
+    $result = $conn->query($sql);
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $numeroActual = $row["max_id"];
+        if (!is_null($numeroActual)) {
+            $nuevoNumeroCredito = "DSI-" . str_pad($numeroActual + 1, 5, "0", STR_PAD_LEFT);
+            return $nuevoNumeroCredito;
         } else {
             return "DSI-00001";
         }
+    } else {
+        return "DSI-00001";
     }
+}
 
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -480,7 +482,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Llamar a la función recalcularMontoPendiente para actualizar el monto pendiente
             recalcularMontoPendiente();
         }
-        
+
 
         // Calcular la fecha de finalización y los montos al cargar la página
         calculateFechaFin();
@@ -489,49 +491,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 
     <script>
-            function exportToExcel() {
-                // Crear un nuevo libro de Excel
-                var workbook = new ExcelJS.Workbook();
-                var worksheet = workbook.addWorksheet('Créditos');
+        function exportToExcel() {
+            // Crear un nuevo libro de Excel
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Créditos');
 
-                // Agregar los títulos de las columnas
-                worksheet.columns = [
-                    { header: 'ID', key: 'id' },
-                    { header: 'N° Crédito', key: 'num_credito' },
-                    { header: 'DUI', key: 'dui' },
-                    { header: 'Nombre Completo', key: 'nombre_completo' },
-                    { header: 'Monto', key: 'monto' },
-                    { header: 'Tipo Pago', key: 'tipo_pago' },
-                    { header: 'Fecha Inicio', key: 'fecha_ini' },
-                    { header: 'Fecha Fin', key: 'fecha_fin' },
-                    { header: 'Plazo', key: 'plazo' },
-                    { header: 'Interes', key: 'interes' },
-                    { header: 'Monto Total', key: 'monto_total' },
-                    { header: 'Cuota', key: 'monto_pendiente' }
-                ];
+            // Agregar los títulos de las columnas
+            worksheet.columns = [{
+                    header: 'ID',
+                    key: 'id'
+                },
+                {
+                    header: 'N° Crédito',
+                    key: 'num_credito'
+                },
+                {
+                    header: 'DUI',
+                    key: 'dui'
+                },
+                {
+                    header: 'Nombre Completo',
+                    key: 'nombre_completo'
+                },
+                {
+                    header: 'Monto',
+                    key: 'monto'
+                },
+                {
+                    header: 'Tipo Pago',
+                    key: 'tipo_pago'
+                },
+                {
+                    header: 'Fecha Inicio',
+                    key: 'fecha_ini'
+                },
+                {
+                    header: 'Fecha Fin',
+                    key: 'fecha_fin'
+                },
+                {
+                    header: 'Plazo',
+                    key: 'plazo'
+                },
+                {
+                    header: 'Interes',
+                    key: 'interes'
+                },
+                {
+                    header: 'Monto Total',
+                    key: 'monto_total'
+                },
+                {
+                    header: 'Cuota',
+                    key: 'monto_pendiente'
+                }
+            ];
 
-                // Obtener los datos de la tabla
-                var table = document.getElementById('datatablesSimple');
-                var rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            // Obtener los datos de la tabla
+            var table = document.getElementById('datatablesSimple');
+            var rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-                // Agregar los datos a las filas del libro de Excel
-                for (var i = 0; i < rows.length; i++) {
-                    var row = rows[i];
-                    var rowData = [];
+            // Agregar los datos a las filas del libro de Excel
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                var rowData = [];
 
-                    for (var j = 0; j < row.cells.length - 1; j++) {
-                        rowData.push(row.cells[j].textContent);
-                    }
-
-                    worksheet.addRow(rowData);
+                for (var j = 0; j < row.cells.length - 1; j++) {
+                    rowData.push(row.cells[j].textContent);
                 }
 
-                // Guardar el archivo Excel
-                workbook.xlsx.writeBuffer().then(function (data) {
-                    var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                    saveAs(blob, 'Creditos_Clientes.xlsx');
-                });
+                worksheet.addRow(rowData);
             }
+
+            // Guardar el archivo Excel
+            workbook.xlsx.writeBuffer().then(function(data) {
+                var blob = new Blob([data], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                saveAs(blob, 'Creditos_Clientes.xlsx');
+            });
+        }
     </script>
 
     <!-- Script para exportar la tabla a un PDF -->
@@ -548,10 +587,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/datatables.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-     <!-- Incluye estas líneas para exportar en excel -->
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- Incluye estas líneas para exportar en excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://unpkg.com/exceljs/dist/exceljs.min.js"></script>
-    
+
     <script src="../Complementos/JS/script.js"></script>
 
 

@@ -37,6 +37,19 @@
                         <div class="sb-nav-link-icon"><i class="fas fa-home-lg"></i></div>
                         Dashboard
                     </a>
+                    <!------------------------------------------- Administración de Sistema ------------------------------------------->
+                    <!-- Gestionar Usuarios -->
+                    <div class="sb-sidenav-menu-heading">Administración de Sistema</div>
+                    <a class="nav-link" href="../Vista/admin_usuarios.php">
+                        <div class="sb-nav-link-icon"><i class="fas fa-home-lg"></i></div>
+                        Gestionar Usuarios
+                    </a>
+
+                    <a class="nav-link" href="../Vista/admin_roles.php">
+                        <div class="sb-nav-link-icon"><i class="fas fa-home-lg"></i></div>
+                        Gestión de Roles
+                    </a>
+                    <!------------------------------------------- Administración de Sistema ------------------------------------------->
 
                     <!-- Gestionar Clientes -->
                     <div class="sb-sidenav-menu-heading">Gestionar Clientes</div>

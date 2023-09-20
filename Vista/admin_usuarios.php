@@ -2,7 +2,7 @@
 <?php include '../Controlador/sesion.php'; ?>
 
 <head>
-    <title>Pagos en Mora</title>
+    <title>Gestión Usuarios</title>
     <?php include '../Modelo/o_head.php'; ?>
 </head>
 
@@ -12,9 +12,9 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">Consulta de Pagos en Mora</h1>
+                <h1 class="mt-4">Gestión de Usuarios de Sistema</h1>
                 <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item active"> DSI ONE / <a href="../Vista/home.php"> DASHBOARD </a></li>
+                    <li class="breadcrumb-item active"> DSI ONE / <a href="../Vista/home.php"> Dashboard </a></li>
                 </ol>
 
                 <!-- Inicio de la Funcionalidad de la Vista-->

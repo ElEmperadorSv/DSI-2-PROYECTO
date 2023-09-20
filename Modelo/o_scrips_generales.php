@@ -12,6 +12,17 @@
 </footer>
 </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#datatablesSimple').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            }
+        });
+    });
+</script>
+
 <!-- Bootstrap JavaScript (Popper.js y Bootstrap JS) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>

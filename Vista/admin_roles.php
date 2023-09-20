@@ -137,8 +137,6 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar
                         <i class="fas fa-table me-1"></i>
                         Roles de Usuario
                         <div style="float: right;">
-                            <button class="btn btn-danger" onclick="exportToPDF()"><i class="fas fa-file-pdf"></i></button>
-                            <button class="btn btn-success" onclick="exportToExcel()"><i class="far fa-file-excel"></i></button>
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRolModal"><i class="fa-solid fa-circle-plus"></i> Nuevo Rol</button>
                         </div>
                     </div>
@@ -182,7 +180,6 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar
                         </table>
                     </div>
                 </div>
-
                 <!-- Termina la Funcionalidad de la Vista-->
             </div>
         </main>
@@ -275,12 +272,20 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar
                         $('#editRolModal #id').val(rol.id);
                         $('#editRolModal #nombre_rol').val(rol.nombre_rol);
                         $('#editRolModal #descripcion_rol').val(rol.descripcion_rol);
+
                         // Cargar los valores posibles de estado en el combo box
                         var selectEstado = $('#editRolModal #estado');
-                        $.each(rol.estado, function(index, estado) {
+                        selectEstado.empty(); // Limpiar opciones existentes
+
+                        // Definir los estados disponibles
+                        var estadosDisponibles = ["ACTIVO", "INACTIVO"];
+
+                        // Iterar sobre los estados y agregarlos al combo box
+                        for (var i = 0; i < estadosDisponibles.length; i++) {
+                            var estado = estadosDisponibles[i];
                             var selected = (estado === rol.estado) ? 'selected' : '';
                             selectEstado.append('<option value="' + estado + '" ' + selected + '>' + estado + '</option>');
-                        });
+                        }
                     },
                     error: function(xhr, status, error) {
                         console.log(error);

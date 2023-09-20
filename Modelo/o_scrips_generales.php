@@ -13,6 +13,25 @@
 </div>
 </div>
 
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/7.1.2/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/datatables.js"></script>
+
+
+<!-- Bootstrap JavaScript (Popper.js y Bootstrap JS) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- líneas para exportar en excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tcpdf@6.3.5/tcpdf.js"></script>
+<script src="https://unpkg.com/exceljs/dist/exceljs.min.js"></script>
+<script src="../Complementos/JS/script.js"></script>
+
 <script>
     $(document).ready(function() {
         $('#datatablesSimple').DataTable({
@@ -22,17 +41,3 @@
         });
     });
 </script>
-
-<!-- Bootstrap JavaScript (Popper.js y Bootstrap JS) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/datatables.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- líneas para exportar en excel -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tcpdf@6.3.5/tcpdf.js"></script>
-<script src="https://unpkg.com/exceljs/dist/exceljs.min.js"></script>
-<script src="../Complementos/JS/script.js"></script>

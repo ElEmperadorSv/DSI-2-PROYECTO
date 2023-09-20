@@ -3,9 +3,6 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-09-2023 a las 09:40:55
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -192,6 +189,7 @@ CREATE TABLE `usuarios_dsi` (
   `id` int(11) NOT NULL,
   `username` varchar(15) NOT NULL,
   `password` varchar(25) NOT NULL,
+  `codigo_recuperacion` varchar(6) DEFAULT NULL
   `carne` varchar(10) NOT NULL,
   `email` varchar(25) NOT NULL,
   `estado` enum('ACTIVO','INACTIVO') NOT NULL DEFAULT 'ACTIVO',
@@ -202,12 +200,14 @@ CREATE TABLE `usuarios_dsi` (
 -- Volcado de datos para la tabla `usuarios_dsi`
 --
 
+
 INSERT INTO `usuarios_dsi` (`id`, `username`, `password`, `carne`, `email`, `estado`, `rol`) VALUES
 (1, 'admin', 'admin', 'ADMIN', 'admin@admin', 'ACTIVO', 'Administrador'),
 (2, 'hgarcia', 'GB15026', 'GB15026', 'gb15026@ues.edu.sv', 'ACTIVO', 'Administrador'),
 (3, 'rongonza', 'AG00026', 'AG00026', 'ag00026@ues.edu.sv', 'ACTIVO', 'Administrador'),
 (4, 'jenherrera', 'HR08032', 'HR08032', 'hr08032@ues.edu.sv', 'ACTIVO', 'Administrador'),
 (5, 'dangarcia', 'GT19011', 'GT19011', 'gt19011@ues.edu.sv', 'ACTIVO', 'Administrador');
+
 
 --
 -- Índices para tablas volcadas

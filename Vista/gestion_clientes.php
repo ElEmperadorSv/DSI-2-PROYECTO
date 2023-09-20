@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitGuardar'])) {
 // Verificar si se ha enviado el formulario de actualizar cliente
 else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) {
     // Verificar si todos los campos requeridos se han llenado
-    $camposRequeridos = array('id','nombre', 'apellido', 'dui', 'fecha_nac', 'telefono', 'email', 'direccion');
+    $camposRequeridos = array('id', 'nombre', 'apellido', 'dui', 'fecha_nac', 'telefono', 'email', 'direccion');
     if (validarCampos($camposRequeridos)) {
         // Obtener el ID del cliente a actualizar desde el formulario
         $id = $_POST['id'];
@@ -483,15 +483,38 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar
             var worksheet = workbook.addWorksheet('Clientes');
 
             // Agregar los títulos de las columnas
-            worksheet.columns = [
-                { header: 'ID', key: 'id' },
-                { header: 'Nombre', key: 'nombre' },
-                { header: 'Apellido', key: 'apellido' },
-                { header: 'DUI', key: 'dui' },
-                { header: 'Fecha de Nacimiento', key: 'fecha_nac' },
-                { header: 'Teléfono', key: 'telefono' },
-                { header: 'Email', key: 'email' },
-                { header: 'Dirección', key: 'direccion' }
+            worksheet.columns = [{
+                    header: 'ID',
+                    key: 'id'
+                },
+                {
+                    header: 'Nombre',
+                    key: 'nombre'
+                },
+                {
+                    header: 'Apellido',
+                    key: 'apellido'
+                },
+                {
+                    header: 'DUI',
+                    key: 'dui'
+                },
+                {
+                    header: 'Fecha de Nacimiento',
+                    key: 'fecha_nac'
+                },
+                {
+                    header: 'Teléfono',
+                    key: 'telefono'
+                },
+                {
+                    header: 'Email',
+                    key: 'email'
+                },
+                {
+                    header: 'Dirección',
+                    key: 'direccion'
+                }
             ];
 
             // Obtener los datos de la tabla
@@ -511,8 +534,10 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar
             }
 
             // Guardar el archivo Excel
-            workbook.xlsx.writeBuffer().then(function (data) {
-                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            workbook.xlsx.writeBuffer().then(function(data) {
+                var blob = new Blob([data], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
                 saveAs(blob, 'clientes.xlsx');
             });
         }
@@ -532,11 +557,11 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Incluye estas líneas para exportar en excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <script src="https://unpkg.com/exceljs/dist/exceljs.min.js"></script> 
+    <script src="https://unpkg.com/exceljs/dist/exceljs.min.js"></script>
 
-    
+
     <script src="../Complementos/JS/script.js"></script>
-    
+
 
 
 

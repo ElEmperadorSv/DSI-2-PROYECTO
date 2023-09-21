@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitGuardar'])) {
         // Verificar si la preparación de la consulta fue exitosa
         if ($stmt) {
             // Vincular los parámetros de la consulta
-            $stmt->bind_param("ssssss", $username, $password, $carne, $email, $estado, $rol);
+            $stmt->bind_param("sssss", $username, $carne, $email, $estado, $rol);
 
             // Ejecutar la consulta
             $stmt->execute();
@@ -88,7 +88,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar
         // Verificar si la preparación de la consulta fue exitosa
         if ($stmt) {
             // Vincular los parámetros de la consulta
-            $stmt->bind_param("ssssssi", $username, $carne, $email, $estado, $rol, $id);
+            $stmt->bind_param("sssssi", $username, $carne, $email, $estado, $rol, $id);
 
             // Ejecutar la consulta
             $stmt->execute();
@@ -330,40 +330,65 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar
                         id: id
                     },
                     success: function(response) {
-                        // Parsear la respuesta JSON
                         var user = JSON.parse(response);
 
-                        // Llenar los campos del formulario en el modal con los datos del cliente
                         $('#editUsuarioModal #id').val(user.id);
                         $('#editUsuarioModal #username').val(user.username);
                         $('#editUsuarioModal #carne').val(user.carne);
                         $('#editUsuarioModal #email').val(user.email);
                         $('#editUsuarioModal #estado').val(user.estado);
-                        $('#editUsuarioModal #rol').val(user.roles);
+                        $('#editUsuarioModal #rol').val(user.rol);
 
-                        // Cargar los valores posibles de estado en el combo box
-                        var selectEstado = $('#editUsuarioModal #estado');
-                        selectEstado.empty(); // Limpiar opciones existentes
+                        // Cargar los valores posibles de estado desde la base de datos
+                        $.ajax({
+                            url: '../Controlador/estados.php',
+                            method: 'GET',
+                            success: function(response) {
+                                var estados = JSON.parse(response);
+                                var selectEstado = $('#editUsuarioModal #estado');
+                                selectEstado.empty(); // Limpiar opciones existentes
+                                for (var i = 0; i < estados.length; i++) {
+                                    var estado = estados[i];
+                                    var selected = (estado === user.estado) ? 'selected' : '';
+                                    selectEstado.append('<option value="' + estado + '" ' + selected + '>' + estado + '</option>');
+                                }
 
-                        // Definir los estados disponibles
-                        var estadosDisponibles = ["ACTIVO", "INACTIVO"];
+                                // Agregar la opción "INACTIVO" si no está ya en la lista
+                                if (!estados.includes('INACTIVO')) {
+                                    selectEstado.append('<option value="INACTIVO">INACTIVO</option>');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.log(error);
+                            }
+                        });
 
-                        // Iterar sobre los estados y agregarlos al combo box
-                        for (var i = 0; i < estadosDisponibles.length; i++) {
-                            var estado = estadosDisponibles[i];
-                            var selected = (estado === rol.estado) ? 'selected' : '';
-                            selectEstado.append('<option value="' + estado + '" ' + selected + '>' + estado + '</option>');
-                        }
-
+                        // Cargar los valores posibles de rol desde la base de datos
+                        $.ajax({
+                            url: '../Controlador/roles.php',
+                            method: 'GET',
+                            success: function(response) {
+                                var roles = JSON.parse(response);
+                                var selectRol = $('#editUsuarioModal #rol');
+                                selectRol.empty(); // Limpiar opciones existentes
+                                for (var i = 0; i < roles.length; i++) {
+                                    var role = roles[i].nombre_rol;
+                                    var selected = (role === user.rol) ? 'selected' : '';
+                                    selectRol.append('<option value="' + role + '" ' + selected + '>' + role + '</option>');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.log(error);
+                            }
+                        });
                     },
                     error: function(xhr, status, error) {
                         console.log(error);
                     }
                 });
-
             }
-            cargarOpcionesRoles();
         </script>
+
 
 
 </body>

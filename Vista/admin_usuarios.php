@@ -247,7 +247,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar
 
         <!------------------------ Modal: Editar Información de Usuario ------------------------>
         <div class="modal fade" id="editUsuarioModal" tabindex="-1" aria-labelledby="editUsuarioModal" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editUsuarioModal">Editar la información de Rol</h5>

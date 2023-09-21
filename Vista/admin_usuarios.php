@@ -15,18 +15,17 @@ function validarCampos($campos)
 // Verificar si se ha enviado el formulario de agregar un nuevo usuario
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitGuardar'])) {
     // Verificar si todos los campos requeridos se han llenado
-    $camposRequeridos = array('username', 'carne', 'email', 'estado', 'rol');
+    $camposRequeridos = array('username', 'password', 'carne', 'email', 'rol');
     if (validarCampos($camposRequeridos)) {
         // Obtener los datos del usuario desde el formulario
         $username = $_POST['username'];
         $password = $_POST['password'];
         $carne = $_POST['carne'];
         $email = $_POST['email'];
-        $estado = $_POST['estado'];
         $rol = $_POST['rol'];
 
         // Consulta de inserción
-        $query = "INSERT INTO usuarios_dsi (username, password, carne, email, estado, rol) VALUES (?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO usuarios_dsi (username, password, carne, email, rol) VALUES (?, ?, ?, ?, ?)";
 
         // Preparar la consulta
         $stmt = $conn->prepare($query);
@@ -34,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitGuardar'])) {
         // Verificar si la preparación de la consulta fue exitosa
         if ($stmt) {
             // Vincular los parámetros de la consulta
-            $stmt->bind_param("sssss", $username, $carne, $email, $estado, $rol);
+            $stmt->bind_param("sssss", $username, $password, $carne, $email, $rol);
 
             // Ejecutar la consulta
             $stmt->execute();

@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtUpdate->bind_param("ss", $finalCode, $username);
         $resultUpdate = $stmtUpdate->execute();
         if ($resultUpdate == 1) {
-            $mailResponse = send($data['correo'], $finalCode);
+            $mailResponse = send($data['email'], $finalCode);
             // echo $mailResponse;
             echo (json_encode($response));
         }
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function send($mail, $code)
 {
     $email = new \SendGrid\Mail\Mail();
-    $email->setFrom("hr08032@ues.edu.sv", "Equipo Desarrollo");
+    $email->setFrom("gb15026@ues.edu.sv", "Equipo Desarrollo");
     $email->setSubject("Correo de Recuperacion");
     $email->addTo($mail, "User");
     $email->addContent(

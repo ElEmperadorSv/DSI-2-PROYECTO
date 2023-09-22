@@ -39,7 +39,7 @@
                     </a>
                     <!------------------------------------------- Administración de Sistema ------------------------------------------->
                     <!-- Gestionar Usuarios -->
-                    <div class="sb-sidenav-menu-heading">Administración de Sistema</div>
+                    <div class="sb-sidenav-menu-heading">Administración</div>
                     <a class="nav-link" href="../Vista/admin_usuarios.php">
                         <div class="sb-nav-link-icon"><i class="fas fa-home-lg"></i></div>
                         Gestionar Usuarios
@@ -59,19 +59,11 @@
                     <!------------------------------------------- Administración de Sistema ------------------------------------------->
 
                     <!-- Gestionar Clientes -->
-                    <div class="sb-sidenav-menu-heading">Gestionar Clientes</div>
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseClientes" aria-expanded="false" aria-controls="collapseClientes">
+                    <div class="sb-sidenav-menu-heading">Operaciones</div>
+                    <a class="nav-link" href="../Vista/aa_crear_cliente.php">
                         <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                         Gestionar Clientes
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="collapseClientes" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="../Vista/aa_crear_cliente.php">Crear Cliente</a>
-                            <a class="nav-link" href="../Vista/ab_modificar_cliente.php">Modificar Cliente</a>
-                            <a class="nav-link" href="../Vista/ac_consultar_clientes.php">Consultar Clientes</a>
-                        </nav>
-                    </div>
 
                     <!-- Gestionar Creditos -->
                     <div class="sb-sidenav-menu-heading">Gestionar Créditos</div>

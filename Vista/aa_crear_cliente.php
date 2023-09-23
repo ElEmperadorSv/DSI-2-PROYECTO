@@ -147,8 +147,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClienteModal"><i class="fa-solid fa-circle-plus"></i>Agregar Cliente</button>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <table id="datatablesSimple" class="display">
+                    <div class="card-body table-responsive" style="overflow-x: auto;">
+                        <table id="datatablesSimple" class="display" style="width: 100%; table-layout: auto;">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -171,6 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
                                 if ($result->num_rows > 0) {
                                     // Iterar sobre los resultados y generar las filas de la tabla
                                     while ($row = $result->fetch_assoc()) {
+                                        echo "<tr>";
                                         echo "<td>" . $row['id_ct'] . "</td>";
                                         echo "<td>" . $row['dui_ct'] . "</td>";
                                         echo "<td>" . $row['nombre_ct'] . "</td>";
@@ -179,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
                                         echo "<td>" . $fecha_nac_ct . "</td>";
                                         echo "<td>" . $row['email_ct'] . "</td>";
                                         echo "<td>" . $row['telefono_ct'] . "</td>";
-                                        echo "<td>" . $row['direccion_ct'] . "</td>";
+                                        echo "<td>" . str_replace(array("\n", "\r"), ' ', $row['direccion_ct']) . "</td>";
                                         echo "<td>" . $row['estado_ct'] . "</td>";
                                         echo '<td>
                                                 <button class="btn btn-primary" onclick="cargarDatosCliente(' . $row['id_ct'] . ')" data-bs-toggle="modal" data-bs-target="#editClienteModal">Editar <i class="fas fa-pencil-alt" style="color: white;"></i></button>
@@ -257,7 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
 
                             <div class="mb-3">
                                 <label for="direccion" class="form-label">Dirección</label>
-                                <input type="text" class="form-control" id="direccion">
+                                <input type="text" class="form-control" id="direccion" name="direccion_ct" maxlength="255">
                             </div>
                         </form>
                     </div>
@@ -327,7 +328,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
 
                             <div class="mb-3">
                                 <label for="direccion" class="form-label">Dirección</label>
-                                <input type="text" class="form-control" id="direccion" name="direccion_ct">
+                                <input type="text" class="form-control" id="direccion" name="direccion_ct" maxlength="255">
                             </div>
 
                             <div class="mb-3">
@@ -386,6 +387,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
             }
         </script>
         <!------------------------ Obtener Datos de Cliente ------------------------>
+
+        <!-------------- Script para el scroll horizontal en card de datatable -------------->
+        <script>
+            $(document).ready(function() {
+                if ($.fn.DataTable.isDataTable('#datatablesSimple')) {
+                    $('#datatablesSimple').DataTable().destroy();
+                }
+
+                $('#datatablesSimple').DataTable({
+                    "scrollX": true,
+                    "autoWidth": true
+                });
+            });
+        </script>
+
+        <!-------------- Script para el scroll horizontal en card de datatable -------------->
 
 
 </body>

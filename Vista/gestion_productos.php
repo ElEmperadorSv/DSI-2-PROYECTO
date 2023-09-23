@@ -12,66 +12,55 @@ function validarCampos($campos)
     return true;
 }
 
-// Verificar si se ha enviado el formulario de agregar un nuevo producto
+
+// Verificar si se ha enviado el formulario de guardar producto
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitGuardar'])) {
     // Verificar si todos los campos requeridos se han llenado
-    $camposRequeridos = array('nombre_pd', 'descripcion_pd', 'stock_pd', 'categoria_pd', 'precio_pd', 'estado_pd');
+    $camposRequeridos = array('nombre_pd', 'descripcion_pd', 'stock_pd', 'categoria_pd', 'precio_pd', 'imagen', 'estado_pd');
     if (validarCampos($camposRequeridos)) {
-        // Obtener los datos del producto desde el formulario
+        // Obtener los datos del nuevo producto desde el formulario
         $nombreProducto = $_POST['nombre_pd'];
         $descripcionProducto = $_POST['descripcion_pd'];
         $stockProducto = $_POST['stock_pd'];
         $categoriaProducto = $_POST['categoria_pd'];
         $precioProducto = $_POST['precio_pd'];
+        $imagenProducto = $_FILES['imagen']['name']; // Nombre del archivo de imagen
         $estadoProducto = $_POST['estado_pd'];
 
-        // Definir una variable para almacenar la URL de la imagen
-        $imagenDestino = '';
-
-        // Procesar la imagen si se proporciona
-        if (!empty($_FILES['imagen']['name'])) {
-            $imagenTmp = $_FILES['imagen']['tmp_name'];
-            $imagenNombre = $_FILES['imagen']['name'];
-            $imagenDestino = __DIR__ . '/../Complementos/Imagenes/' . $imagenNombre;
-
-            if (move_uploaded_file($imagenTmp, $imagenDestino)) {
-                // La imagen se movió correctamente, se almacenará la URL de la imagen en la base de datos
-            } else {
-                // Error al mover la nueva imagen
-                echo "Error al mover la nueva imagen.";
-                exit();
-            }
-        }
+        // Ruta donde se guardará la imagen (ajústala según tu configuración)
+        $rutaImagen = __DIR__ . '/../Complementos/Imagenes/' . $imagenProducto;
 
         // Consulta de inserción para productos
-        $query = "INSERT INTO productos_dsi (nombre_pd, descripcion_pd, stock_pd, categoria_pd, precio_pd, estado_pd, imagen) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO productos_dsi (nombre_pd, descripcion_pd, stock_pd, categoria_pd, precio_pd, imagen, estado_pd) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         // Preparar la consulta
         $stmt = $conn->prepare($query);
 
         // Verificar si la preparación de la consulta fue exitosa
         if ($stmt) {
-            // Vincular los parámetros de la consulta, incluyendo la URL de la imagen si se proporciona
-            if (!empty($imagenDestino)) {
-                $stmt->bind_param("ssssssss", $nombreProducto, $descripcionProducto, $stockProducto, $categoriaProducto, $precioProducto, $estadoProducto, $imagenDestino);
+            // Vincular los parámetros
+            $stmt->bind_param("sssssss", $nombreProducto, $descripcionProducto, $stockProducto, $categoriaProducto, $precioProducto, $imagenProducto, $estadoProducto);
+
+            // Mover la imagen cargada al directorio deseado
+            if (move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaImagen)) {
+                // Ejecutar la consulta
+                $stmt->execute();
+
+                // Verificar si la inserción fue exitosa
+                if ($stmt->affected_rows > 0) {
+                    // La inserción fue exitosa, realizar las acciones adicionales necesarias
+                    // ...
+
+                    // Redireccionar a la página de gestión de productos o a donde desees
+                    header("Location: ../Vista/gestion_productos.php");
+                    exit();
+                } else {
+                    // Ocurrió un error al insertar el nuevo registro
+                    echo "Error al insertar el nuevo registro en la base de datos.";
+                }
             } else {
-                $stmt->bind_param("sssssss", $nombreProducto, $descripcionProducto, $stockProducto, $categoriaProducto, $precioProducto, $estadoProducto, $imagenDestino);
-            }
-
-            // Ejecutar la consulta
-            $stmt->execute();
-
-            // Verificar si la inserción fue exitosa
-            if ($stmt->affected_rows > 0) {
-                // La inserción fue exitosa, realizar las acciones adicionales necesarias
-                // ...
-
-                // Redireccionar al producto a la página de gestión
-                header("Location: ../Vista/gestion_productos.php");
-                exit();
-            } else {
-                // Ocurrió un error al insertar el registro
-                echo "Error al insertar el registro en la base de datos.";
+                // Error al mover la imagen
+                echo "Error al mover la imagen.";
             }
 
             // Cerrar la declaración
@@ -80,12 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitGuardar'])) {
             // Ocurrió un error al preparar la consulta
             echo "Error al preparar la consulta.";
         }
-
-        // Cerrar la conexión
-        $conn->close();
     }
 }
-
 
 // Verificar si se ha enviado el formulario de actualizar producto
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) {
@@ -158,11 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
             echo "Error al preparar la consulta.";
         }
 
-        // Cerrar la conexión
-        $conn->close();
     }
 }
-
 
 ?>
 
@@ -235,8 +217,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
                                     echo "<tr><td colspan='9'>No se encontraron registros en la tabla productos.</td></tr>";
                                 }
                                 
-                                // Cerrar la conexión
-                                $conn->close();
                                 ?>
                             </tbody>
                         </table>
@@ -274,14 +254,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
                                 <input type="number" class="form-control" id="stock_pd" name="stock_pd" required>
                             </div>
 
+                            <?php
+                            //Consulta SQL para obtener las categorías
+                            $query = "SELECT id_cat, nombre_cat FROM categorias_dsi";
+                            $result = $conn->query($query);
+                            ?>
                             <div class="mb-3">
                                 <label for="categoria_pd" class="form-label">Categoría</label>
                                 <select class="form-select" id="categoria_pd" name="categoria_pd" required>
-                                    <option value="Electrodomésticos">Electrodomésticos</option>
-                                    <option value="Electrónica">Electrónica</option>
-                                    <option value="Ropa y Moda">Ropa y Moda</option>
-                                    <option value="Hogar y Jardín">Hogar</option>
-                                    <option value="Muebles">Muebles</option>
+                                    <?php
+                                    // Generar las opciones dinámicamente
+                                    if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo '<option value="' . $row["id_cat"] . '">' . $row["nombre_cat"] . '</option>';
+                                        }
+                                    }
+
+                                    ?>
                                 </select>
                             </div>
 
@@ -334,15 +323,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
                             <label for="stock_pd" class="form-label">Stock</label>
                             <input type="number" class="form-control" id="stock_pd" name="stock_pd" required>
                         </div>
+                        
+                        <?php
+                            //Consulta SQL para obtener las categorías
+                            $query = "SELECT id_cat, nombre_cat FROM categorias_dsi";
+                            $result = $conn->query($query);
 
+
+                        ?>
                         <div class="mb-3">
                             <label for="categoria_pd" class="form-label">Categoría</label>
                             <select class="form-select" id="categoria_pd" name="categoria_pd" required>
-                                <option value="Electrodomésticos">Electrodomésticos</option>
-                                <option value="Electrónica">Electrónica</option>
-                                <option value="Ropa y Moda">Ropa y Moda</option>
-                                <option value="Hogar y Jardín">Hogar</option>
-                                <option value="Muebles">Muebles</option>
+                                <?php
+                                // Generar las opciones dinámicamente
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo '<option value="' . $row["id_cat"] . '">' . $row["nombre_cat"] . '</option>';
+                                    }
+                                }
+                                // Cerrar la conexión
+                                $conn->close();
+                                ?>
                             </select>
                         </div>
 

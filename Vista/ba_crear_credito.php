@@ -12,25 +12,6 @@ function validarCampos($campos)
     return true;
 }
 
-function generarNumeroCredito($conn)
-{
-    $sql = "SELECT MAX(id) AS max_id FROM creditos_dsi";
-    $result = $conn->query($sql);
-    if ($result && $result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $numeroActual = $row["max_id"];
-        if (!is_null($numeroActual)) {
-            $nuevoNumeroCredito = "DSI-" . str_pad($numeroActual + 1, 5, "0", STR_PAD_LEFT);
-            return $nuevoNumeroCredito;
-        } else {
-            return "DSI-00001";
-        }
-    } else {
-        return "DSI-00001";
-    }
-}
-
-
 // Verificar si se ha enviado el formulario de agregar cliente
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Verificar si todos los campos requeridos se han llenado
@@ -58,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Verificar si la preparación de la consulta fue exitosa
         if ($stmt) {
             // Vincular los parámetros de la consulta
-            $stmt->bind_param("ssssssssssssss", $num_credito, $dui, $nombre_completo, $monto, $tipo_pago, $fecha_ini, $fecha_fin, $plazo, $interes, $monto_total, $monto_pendiente, $producto, $cantidad_producto, $estado_credito);
+            $stmt->bind_param("sssssssssss", $num_credito, $dui, $nombre_completo, $monto, $tipo_pago, $fecha_ini, $fecha_fin, $plazo, $interes, $monto_total, $monto_pendiente);
 
             // Ejecutar la consulta
             $stmt->execute();
@@ -79,6 +60,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
         echo "Todos los campos requeridos deben ser llenados.";
+    }
+}
+
+// Función para generar el número de crédito automático
+function generarNumeroCredito($conn)
+{
+    $sql = "SELECT MAX(id) AS max_id FROM creditos_dsi";
+    $result = $conn->query($sql);
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $numeroActual = $row["max_id"];
+        if (!is_null($numeroActual)) {
+            $nuevoNumeroCredito = "DSI-" . str_pad($numeroActual + 1, 5, "0", STR_PAD_LEFT);
+            return $nuevoNumeroCredito;
+        } else {
+            return "DSI-00001";
+        }
+    } else {
+        return "DSI-00001";
     }
 }
 ?>
@@ -195,9 +195,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-------------- Script para el scroll horizontal en card de datatable -------------->
 
 
-        <!------------------------------ Agregar Crédito Modal ------------------------------>
+        <!------------------------------------ Agregar Crédito Modal ------------------------------------>
         <div class="modal fade" id="addCreditoModal" tabindex="-1" aria-labelledby="addCreditoModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="addCreditoModalLabel">Agregar Crédito Nuevo</h5>
@@ -205,34 +205,108 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="modal-body">
                         <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-                            <!-- ... Otros campos ... -->
+
                             <div class="row mb-3">
                                 <div class="col-6">
                                     <label for="num_credito" class="form-label">Número de Crédito</label>
-                                    <input type="text" class="form-control" id="num_credito" name="num_credito" value="<?php echo $num_credito; ?>" readonly>
+                                    <input type="text" class="form-control" id="num_credito" name="num_credito" value="<?php echo generarNumeroCredito($conn); ?>" readonly>
                                 </div>
                             </div>
+
+
+                            <!-- Información del Cliente -->
+                            <h6 style="color: blue;">Información del Cliente</h6>
+                            <hr>
+
                             <div class="row mb-3">
                                 <div class="col-6">
-                                    <label for="dui" class="form-label">DUI del Cliente</label>
-                                    <input type="text" class="form-control" id="dui" name="dui" value="<?php echo $dui_ct; ?>" readonly>
+                                    <label for="dui_ct" class="form-label">Seleccionar DUI</label>
+                                    <select class="form-select" id="dui_ct" name="dui_ct" required>
+                                        <option value="" selected disabled>Seleccionar DUI</option>
+                                        <?php
+                                        // Incluir el archivo de conexión a la base de datos
+                                        require_once "../Controlador/db_connection.php";
+
+                                        // Consulta los datos de la tabla clientes_dsi
+                                        $sql = "SELECT dui_ct, nombre_completo_ct FROM clientes_dsi";
+                                        $result = mysqli_query($conn, $sql);
+
+                                        // Verifica si se encontraron registros
+                                        if (mysqli_num_rows($result) > 0) {
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                $cliente_dui = $row['dui_ct'];
+                                                $cliente_nombre = $row['nombre_completo_ct'];
+                                                echo "<option value='$cliente_dui'>$cliente_dui - $cliente_nombre</option>";
+                                            }
+                                        } else {
+                                            echo "<option value='' disabled>No se encontraron clientes</option>";
+                                        }
+                                        // Cierra la conexión a la base de datos
+                                        mysqli_close($conn);
+                                        ?>*/
+                                    </select>
                                 </div>
                                 <div class="col-6">
-                                    <label for="cliente" class="form-label">Nombre del Cliente</label>
-                                    <input type="text" class="form-control" id="cliente" name="cliente" value="<?php echo $cliente; ?>" readonly>
+                                    <label for="nombre_completo_ct" class="form-label">Nombre del Cliente</label>
+                                    <input type="text" class="form-control" id="nombre_completo_ct" name="nombre_completo_ct" readonly>
                                 </div>
                             </div>
+
+
+                            <!-- Información del Producto -->
+                            <h6 style="color: blue;">Información del Producto</h6>
+                            <hr>
+
                             <div class="row mb-3">
                                 <div class="col-6">
                                     <label for="producto" class="form-label">Producto</label>
-                                    <input type="text" class="form-control" id="producto" name="producto" value="<?php echo $producto; ?>" readonly>
+                                    <input class="form-control" id="nombre_pd" name="nombre_pd">
                                 </div>
+
                                 <div class="col-6">
-                                    <label for="cantidad_producto" class="form-label">Cantidad de Productos</label>
-                                    <input type="text" class="form-control" id="cantidad_producto" name="cantidad_producto" value="<?php echo $cantidad_producto; ?>" readonly>
+                                    <label for="cantidad" class="form-label">Cantidad</label>
+                                    <input type="number" step="1.0" class="form-control" id="cantidad" name="cantidad">
                                 </div>
                             </div>
-                            <!-- ... Otros campos ... -->
+
+
+                            <!-- Información del Crédito -->
+                            <h6 style="color: blue;">Información del Crédito</h6>
+                            <hr>
+
+                            <div class="row mb-3">
+                                <div class="col-3">
+                                    <label for="tipo_pago" class="form-label">Tipo de Pago</label>
+                                    <select class="form-select" id="tipo_pago" name="tipo_pago" required>
+                                        <option value="" selected disabled>Tipo de Pago</option>
+                                        <option value="quincenal">Quincenal</option>
+                                        <option value="mensual">Mensual</option>
+                                    </select>
+                                </div>
+                                <div class="col-3">
+                                    <label for="plazo" class="form-label">Plazo</label>
+                                    <select class="form-select" id="plazo" name="plazo" required>
+                                        <option value="" selected disabled>Tipo de Plazo</option>
+                                        <option value="3">3 meses</option>
+                                        <option value="6">6 meses</option>
+                                        <option value="9">9 meses</option>
+                                        <option value="12">12 meses</option>
+                                        <option value="15">15 meses</option>
+                                        <option value="18">18 meses</option>
+                                        <option value="21">21 meses</option>
+                                        <option value="24">24 meses</option>
+                                    </select>
+                                </div>
+                                <div class="col-3">
+                                    <label for="fecha_ini" class="form-label">Fecha de Inicio</label>
+                                    <input type="date" class="form-control" id="fecha_ini" name="fecha_ini" required>
+                                </div>
+                                <div class="col-3">
+                                    <label for="fecha_fin" class="form-label">Fecha de Finalización</label>
+                                    <input type="text" class="form-control" id="fecha_fin" name="fecha_fin" onchange="calculateFechaFin()" readonly>
+                                </div>
+                            </div>
+
                             <div class="row mb-3">
                                 <div class="col-3">
                                     <label for="monto" class="form-label">Monto</label>
@@ -256,6 +330,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <input type="text" class="form-control" id="monto_pendiente" name="monto_pendiente" readonly>
                                 </div>
                             </div>
+
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-primary">Crear Crédito</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -265,92 +340,219 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
         </div>
+    </div>
+    <!------------------------------------ Agregar Crédito Modal ------------------------------------>
 
-        <script>
-            // Obtener el valor del DUI seleccionado y mostrar el nombre completo del cliente
-            document.getElementById("dui").addEventListener("change", function() {
-                var selectedDui = this.value;
-                var options = this.options;
-                var selectedOption = options[options.selectedIndex];
-                var nombreCompleto = selectedOption.text.split(" - ")[1];
-                document.getElementById("nombre_completo").value = nombreCompleto;
+    <script>
+        $(document).ready(function() {
+            $('#datatablesSimple').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                }
             });
+        });
+    </script>
 
-            // Calcular la fecha de finalización según el tipo de pago y el plazo seleccionado
-            document.getElementById("tipo_pago").addEventListener("change", calculateFechaFin);
-            document.getElementById("plazo").addEventListener("change", calculateFechaFin);
-            document.getElementById("fecha_ini").addEventListener("change", calculateFechaFin);
 
-            function calculateFechaFin() {
-                var tipoPago = document.getElementById("tipo_pago").value;
-                var plazo = parseInt(document.getElementById("plazo").value);
-                var fechaInicio = new Date(document.getElementById("fecha_ini").value);
-                var fechaFin = new Date(fechaInicio);
+    <script>
+        // Función para obtener el valor del DUI seleccionado y mostrar el nombre completo del cliente
+        function actualizarNombreCompleto() {
+            var selectedDui = document.getElementById("dui_ct").value;
+            var options = document.getElementById("dui_ct").options;
+            var selectedOption = options[options.selectedIndex];
+            var nombreCompleto = selectedOption.text.split(" - ")[1];
 
-                if (tipoPago === "quincenal") {
-                    fechaFin.setDate(fechaInicio.getDate() + (plazo * 15));
-                } else if (tipoPago === "mensual") {
-                    fechaFin.setMonth(fechaInicio.getMonth() + plazo);
-                }
+            // Actualizar el campo "Nombre del Cliente"
+            document.getElementById("nombre_completo_ct").value = nombreCompleto;
+        }
 
-                var dia = fechaFin.getDate();
-                var mes = fechaFin.getMonth() + 1; // Los meses en JavaScript son base 0, por lo que se agrega 1
-                var anio = fechaFin.getFullYear();
+        // Agregar un evento al cargar la página para inicializar el comportamiento
+        window.addEventListener("load", function() {
+            // Llamar a la función para inicializar el nombre del cliente
+            actualizarNombreCompleto();
 
-                // Verificar si el valor calculado es NaN
-                if (isNaN(dia) || isNaN(mes) || isNaN(anio)) {
-                    document.getElementById("fecha_fin").value = "";
-                } else {
-                    // Formatear la fecha como "yyyy-mm-dd"
-                    var fechaFinFormateada = anio + "-" + ("00" + mes).slice(-2) + "-" + ("00" + dia).slice(-2);
-                    document.getElementById("fecha_fin").value = fechaFinFormateada;
-                }
+            // Agregar un evento al cambio en el select
+            document.getElementById("dui_ct").addEventListener("input", function() {
+                var inputDui = this.value;
+                var formattedDui = inputDui.replace(/\D/g, "").substring(0, 9); // Obtener solo los primeros 9 dígitos
+
+                this.value = formattedDui;
+
+                // Llamar a la función para actualizar el nombre completo
+                actualizarNombreCompleto();
+            });
+        });
+
+
+
+
+        // Calcular la fecha de finalización según el tipo de pago y el plazo seleccionado
+        document.getElementById("tipo_pago").addEventListener("change", calculateFechaFin);
+        document.getElementById("plazo").addEventListener("change", calculateFechaFin);
+        document.getElementById("fecha_ini").addEventListener("change", calculateFechaFin);
+
+        function calculateFechaFin() {
+            var tipoPago = document.getElementById("tipo_pago").value;
+            var plazo = parseInt(document.getElementById("plazo").value);
+            var fechaInicio = new Date(document.getElementById("fecha_ini").value);
+            var fechaFin = new Date(fechaInicio);
+
+            if (tipoPago === "quincenal") {
+                fechaFin.setMonth(fechaInicio.getMonth() + plazo);
+            } else if (tipoPago === "mensual") {
+                fechaFin.setMonth(fechaInicio.getMonth() + plazo);
             }
 
-            // Calcular el monto pendiente según el monto total, el tipo de pago y el plazo seleccionado
-            document.getElementById("monto_total").addEventListener("input", recalcularMontoPendiente);
-            document.getElementById("tipo_pago").addEventListener("change", recalcularMontoPendiente);
-            document.getElementById("plazo").addEventListener("change", recalcularMontoPendiente);
+            var dia = fechaFin.getDate();
+            var mes = fechaFin.getMonth() + 1; // Los meses en JavaScript son base 0, por lo que se agrega 1
+            var anio = fechaFin.getFullYear();
 
-            function recalcularMontoPendiente() {
-                var montoTotal = parseFloat(document.getElementById("monto_total").value);
-                var tipoPago = document.getElementById("tipo_pago").value;
-                var plazo = parseInt(document.getElementById("plazo").value);
-                var factorPago = tipoPago === "quincenal" ? 2 : 1;
-                var montoPendiente = montoTotal / (factorPago * plazo);
+            // Verificar si el valor calculado es NaN
+            if (isNaN(dia) || isNaN(mes) || isNaN(anio)) {
+                document.getElementById("fecha_fin").value = "";
+            } else {
+                // Formatear la fecha como "dd/mm/yyyy"
+                var fechaFinFormateada = ("00" + dia).slice(-2) + "/" + ("00" + mes).slice(-2) + "/" + anio;
+                document.getElementById("fecha_fin").value = fechaFinFormateada;
+            }
+        }
 
-                if (isNaN(montoPendiente)) {
-                    document.getElementById("monto_pendiente").value = "";
-                } else {
-                    document.getElementById("monto_pendiente").value = montoPendiente.toFixed(2);
-                }
+        // Calcular el monto pendiente según el monto total, el tipo de pago y el plazo seleccionado
+        document.getElementById("monto_total").addEventListener("input", recalcularMontoPendiente);
+        document.getElementById("tipo_pago").addEventListener("change", recalcularMontoPendiente);
+        document.getElementById("plazo").addEventListener("change", recalcularMontoPendiente);
+
+        function recalcularMontoPendiente() {
+            var montoTotal = parseFloat(document.getElementById("monto_total").value);
+            var tipoPago = document.getElementById("tipo_pago").value;
+            var plazo = parseInt(document.getElementById("plazo").value);
+            var factorPago = tipoPago === "quincenal" ? 2 : 1;
+            var montoPendiente = montoTotal / (factorPago * plazo);
+
+            if (isNaN(montoPendiente)) {
+                document.getElementById("monto_pendiente").value = "";
+            } else {
+                document.getElementById("monto_pendiente").value = montoPendiente.toFixed(2);
+            }
+        }
+
+        // Calcular el monto total según el monto y el interés seleccionado
+        document.getElementById("monto").addEventListener("input", recalcularMontoTotal);
+        document.getElementById("interes").addEventListener("change", recalcularMontoTotal);
+
+        function recalcularMontoTotal() {
+            var monto = parseFloat(document.getElementById("monto").value);
+            var interes = parseFloat(document.getElementById("interes").value);
+            var montoTotal = monto * interes || 0; // Asegurarse de que el resultado sea un número válido
+            var montoFinal = monto + montoTotal;
+
+            if (isNaN(montoFinal)) {
+                document.getElementById("monto_total").value = "";
+            } else {
+                document.getElementById("monto_total").value = montoFinal.toFixed(2);
             }
 
-            // Calcular el monto total según el monto y el interés seleccionado
-            document.getElementById("monto").addEventListener("input", recalcularMontoTotal);
-            document.getElementById("interes").addEventListener("change", recalcularMontoTotal);
-
-            function recalcularMontoTotal() {
-                var monto = parseFloat(document.getElementById("monto").value);
-                var interes = parseFloat(document.getElementById("interes").value);
-                var montoTotal = monto + (monto * interes); // Calcular monto total con interés
-                var montoFinal = montoTotal;
-
-                if (isNaN(montoFinal)) {
-                    document.getElementById("monto_total").value = "";
-                } else {
-                    document.getElementById("monto_total").value = montoFinal.toFixed(2);
-                }
-
-                // Llamar a la función recalcularMontoPendiente para actualizar el monto pendiente
-                recalcularMontoPendiente();
-            }
-
-            // Calcular la fecha de finalización y los montos al cargar la página
-            calculateFechaFin();
+            // Llamar a la función recalcularMontoPendiente para actualizar el monto pendiente
             recalcularMontoPendiente();
-            recalcularMontoTotal();
-        </script>
+        }
+
+
+        // Calcular la fecha de finalización y los montos al cargar la página
+        calculateFechaFin();
+        recalcularMontoPendiente();
+        recalcularMontoTotal();
+    </script>
+
+    <script>
+        function exportToExcel() {
+            // Crear un nuevo libro de Excel
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Créditos');
+
+            // Agregar los títulos de las columnas
+            worksheet.columns = [{
+                    header: 'ID',
+                    key: 'id'
+                },
+                {
+                    header: 'N° Crédito',
+                    key: 'num_credito'
+                },
+                {
+                    header: 'DUI',
+                    key: 'dui'
+                },
+                {
+                    header: 'Nombre Completo',
+                    key: 'nombre_completo'
+                },
+                {
+                    header: 'Monto',
+                    key: 'monto'
+                },
+                {
+                    header: 'Tipo Pago',
+                    key: 'tipo_pago'
+                },
+                {
+                    header: 'Fecha Inicio',
+                    key: 'fecha_ini'
+                },
+                {
+                    header: 'Fecha Fin',
+                    key: 'fecha_fin'
+                },
+                {
+                    header: 'Plazo',
+                    key: 'plazo'
+                },
+                {
+                    header: 'Interes',
+                    key: 'interes'
+                },
+                {
+                    header: 'Monto Total',
+                    key: 'monto_total'
+                },
+                {
+                    header: 'Cuota',
+                    key: 'monto_pendiente'
+                }
+            ];
+
+            // Obtener los datos de la tabla
+            var table = document.getElementById('datatablesSimple');
+            var rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            // Agregar los datos a las filas del libro de Excel
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                var rowData = [];
+
+                for (var j = 0; j < row.cells.length - 1; j++) {
+                    rowData.push(row.cells[j].textContent);
+                }
+
+                worksheet.addRow(rowData);
+            }
+
+            // Guardar el archivo Excel
+            workbook.xlsx.writeBuffer().then(function(data) {
+                var blob = new Blob([data], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                saveAs(blob, 'Creditos_Clientes.xlsx');
+            });
+        }
+    </script>
+
+    <!-- Script para exportar la tabla a un PDF -->
+    <script>
+        function exportToPDF() {
+            // Redireccionar a la página que genera el PDF
+            window.location.href = '../Modelo/pdf_creditos.php';
+        }
+    </script>
 
 
 

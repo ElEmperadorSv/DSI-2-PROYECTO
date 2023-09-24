@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-09-2023 a las 08:47:37
+-- Tiempo de generación: 25-09-2023 a las 01:53:33
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -68,7 +68,7 @@ CREATE TABLE `clientes_dsi` (
 
 INSERT INTO `clientes_dsi` (`id_ct`, `dui_ct`, `nombre_ct`, `apellido_ct`, `nombre_completo_ct`, `fecha_nac_ct`, `telefono_ct`, `email_ct`, `direccion_ct`, `estado_ct`) VALUES
 (1, 123456789, 'Jorge', 'Lopez', 'Jorge Lopez', '2000-07-13', 68958360, 'jorgelopz@example.com', 'Barrio El Centro, Soyapango', 'ACTIVO'),
-(2, 293060489, 'Antonio L.', 'Rivera', 'Antonio L. Rivera', '1998-04-17', 79958502, 'antonio@example.com', 'Barrio El Centro, Sonsonate', 'INACTIVO'),
+(2, 293060489, 'Antonio L.', 'Rivera', 'Antonio L. Rivera', '1998-04-17', 79958502, 'antonio@example.com', 'Barrio El Centro, Sonsonate', 'ACTIVO'),
 (3, 293060488, 'Juan ', 'Lopez', 'Juan  Lopez', '2002-07-26', 68958502, 'juan@example.com', 'Barrio El Calvario, Sonsonate', 'ACTIVO'),
 (4, 330604452, 'Dennys', 'Garcia', 'Dennys Garcia', '1999-06-30', 78958963, 'dennys@example.com', 'Miralvalle, San Salvador', 'ACTIVO'),
 (5, 103060412, 'Luis', 'Moran', 'Luis Moran', '2002-05-29', 72694502, 'luismoran@example.com', 'Barrio El Calvario, La Libertad', 'ACTIVO'),
@@ -97,7 +97,7 @@ CREATE TABLE `creditos_dsi` (
   `plazo` int(11) NOT NULL,
   `monto_total` decimal(10,2) NOT NULL,
   `monto_pendiente` decimal(10,2) NOT NULL,
-  `tipo_pago` enum('Mensual','','') NOT NULL DEFAULT 'Mensual',
+  `tipo_pago` enum('Mensual','Quincenal','','') NOT NULL DEFAULT 'Mensual',
   `fecha_ini` date NOT NULL,
   `fecha_fin` date NOT NULL,
   `estado_credito` enum('ACTIVO','FINALIZADO') NOT NULL DEFAULT 'ACTIVO'
@@ -108,7 +108,7 @@ CREATE TABLE `creditos_dsi` (
 --
 
 INSERT INTO `creditos_dsi` (`id`, `dui_ct`, `cliente`, `num_credito`, `producto`, `cantidad_producto`, `monto`, `interes`, `plazo`, `monto_total`, `monto_pendiente`, `tipo_pago`, `fecha_ini`, `fecha_fin`, `estado_credito`) VALUES
-(8, 123456789, 'Jorge Lopez', 'DSI-00008', 'Ropero', 1, 100.00, 0.05, 1, 105.00, 105.00, 'Mensual', '2023-09-21', '2023-10-21', 'FINALIZADO');
+(8, 123456789, 'Jorge Lopez', 'DSI-00008', 'Ropero', 1, 100.00, 0.05, 1, 105.00, 105.00, 'Quincenal', '2023-09-21', '2023-10-21', 'FINALIZADO');
 
 --
 -- Disparadores `creditos_dsi`
@@ -175,12 +175,12 @@ CREATE TABLE `productos_dsi` (
 --
 
 INSERT INTO `productos_dsi` (`id_pd`, `nombre_pd`, `descripcion_pd`, `stock_pd`, `categoria_pd`, `precio_pd`, `estado_pd`, `imagen`) VALUES
-(1, 'Ropero', 'Guardar Ropa xd', 1, 'Oficina', 100.00, 'ACTIVO', '../Complementos/Imagenes/1ea4a0ce-eaa0-4bfd-9ea9-e04e6540b1f2.jpg'),
+(1, 'Ropero', 'Guardar Ropa xd', 1, 'Sala', 100.00, 'ACTIVO', '../Complementos/Imagenes/1ea4a0ce-eaa0-4bfd-9ea9-e04e6540b1f2.jpg'),
 (4, 'PRUEBA', 'ds', 1, 'Dormitorio', 0.00, 'ACTIVO', '../Complementos/Imagenes/6a49b04ae7be5990a242b173a514e22c.jpg'),
 (5, 'Escritorio', 'mamalon xd', 3, 'Oficina', 100.89, 'ACTIVO', '../Complementos/Imagenes/6a49b04ae7be5990a242b173a514e22c.jpg'),
 (6, 'silla', 'dsad', 1, 'Oficina', 5.00, 'ACTIVO', '../Complementos/Imagenes/6a49b04ae7be5990a242b173a514e22c.jpg'),
 (7, 'dasd', 'dsad', 1, 'Dormitorio', 1.00, 'ACTIVO', '../Complementos/Imagenes/6a49b04ae7be5990a242b173a514e22c.jpg'),
-(8, 'silla', 'da', 1, 'Oficina', 0.05, 'ACTIVO', '../Complementos/Imagenes/1ea4a0ce-eaa0-4bfd-9ea9-e04e6540b1f2.jpg');
+(8, 'silla', 'da', 1, 'Oficina', 0.05, 'ACTIVO', '../Complementos/Imagenes/6a49b04ae7be5990a242b173a514e22c.jpg');
 
 -- --------------------------------------------------------
 
@@ -200,7 +200,7 @@ CREATE TABLE `roles_usuarios` (
 --
 
 INSERT INTO `roles_usuarios` (`id`, `nombre_rol`, `descripcion_rol`, `estado`) VALUES
-(1, 'Administrador', 'prueba', 'INACTIVO'),
+(1, 'Administrador', 'prueba', 'ACTIVO'),
 (2, 'Depto. de Contabilidad', 'Rol que permite ver el detalle de créditos, produc', 'ACTIVO'),
 (3, 'Cajero', 'Gestiona los créditos, usuarios, etc', 'ACTIVO'),
 (7, 'Prueba', 'Prueba', 'ACTIVO');
@@ -232,7 +232,7 @@ INSERT INTO `usuarios_dsi` (`id`, `username`, `password`, `carne`, `email`, `cod
 (3, 'rongonza', 'AG00026', 'AG00026', 'ag00026@ues.edu.sv', NULL, 'ACTIVO', 'Administrador'),
 (4, 'jenherrera', 'HR08032', 'HR08032', 'hr08032@ues.edu.sv', NULL, 'ACTIVO', 'Administrador'),
 (5, 'dangarcia', 'GT19011', 'GT19011', 'gt19011@ues.edu.sv', NULL, 'ACTIVO', 'Administrador'),
-(7, 'ejemplo', 'ejemplo', 'pruebe', 'ejemplo@gmail.com', NULL, 'ACTIVO', 'Cajero');
+(7, 'ejemplo', 'ejemplo', 'pruebe', 'ejemplo@gmail.com', NULL, 'INACTIVO', 'Cajero');
 
 --
 -- Índices para tablas volcadas

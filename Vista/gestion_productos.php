@@ -340,29 +340,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
                             $result = $conn->query($query);
                             ?>
 
-                            <div class="mb-3">
-                                <label for="categoria_pd_edit" class="form-label">Categoría</label>
-                                <select class="form-select" id="categoria_pd_edit" name="categoria_pd" required>
-                                    <option value="" selected disabled>Seleccionar categoría</option>
-                                    <?php
-                                    // Generar las opciones dinámicamente
-                                    if ($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo '<option value="' . $row["nombre_cat"] . '">' . $row["nombre_cat"] . '</option>';
+                            <div class="mb-3 row">
+                                <label for="categoria_pd_edit" class="col-sm-2 col-form-label">Categoría</label>
+                                <div class="col-sm-6">
+                                    <select class="form-select form-control" id="categoria_pd_edit" name="categoria_pd" required>
+                                        <option value="" selected disabled>Seleccionar categoría</option>
+                                        <?php
+                                        // Generar las opciones dinámicamente
+                                        if ($result->num_rows > 0) {
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo '<option value="' . $row["nombre_cat"] . '">' . $row["nombre_cat"] . '</option>';
+                                            }
                                         }
-                                    }
-                                    ?>
-                                </select>
+                                        ?>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="nombre_pd_edit" class="form-label">Nombre del Producto</label>
-                                <input type="text" class="form-control" id="nombre_pd_edit" name="nombre_pd" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="descripcion_pd_edit" class="form-label">Descripción</label>
-                                <textarea class="form-control" id="descripcion_pd_edit" name="descripcion_pd" required></textarea>
+                            <div class="mb-3 row">
+                                <div class="col-sm-6">
+                                    <label for="nombre_pd_edit" class="col-sm-10 col-form-label">Nombre del Producto</label>
+                                    <input type="text" class="form-control" id="nombre_pd_edit" name="nombre_pd" required>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="descripcion_pd_edit" class="col-sm-2 col-form-label">Descripción</label>
+                                    <textarea class="form-control" id="descripcion_pd_edit" name="descripcion_pd" required></textarea>
+                                </div>
                             </div>
 
                             <div class="row">

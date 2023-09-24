@@ -51,19 +51,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 function send($mail, $code)
 {
-    $apiKey = 'YOUR_SENDGRID_API_KEY';  // Replace with your SendGrid API key
-
     $email = new \SendGrid\Mail\Mail();
     $email->setFrom("gb15026@ues.edu.sv", "Equipo Desarrollo");
     $email->setSubject("Correo de Recuperacion");
     $email->addTo($mail, "User");
     $email->addContent(
         "text/html",
-        "<p>Usa el siguiente codigo para recuperar tu clave</p><br><strong>$code</strong>"
+        "
+        <p>Usa el siguiente codigo para recuperar tu clave</p>
+        <br>
+        <strong>$code</strong>
+        "
     );
-
-    $sendgrid = new \SendGrid($apiKey);
-
+    $sendgrid = new \SendGrid('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');
     try {
         $response = $sendgrid->send($email);
         return $response->statusCode();

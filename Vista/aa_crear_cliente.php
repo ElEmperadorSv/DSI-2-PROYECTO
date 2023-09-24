@@ -221,44 +221,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
                                 </div>
                             </div>
 
-                            <div class="mb-3 row">
-                                <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
+                            <div class="row">
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control" id="nombre">
+                                    <div class="mb-3">
+                                        <label for="nombre" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" id="nombre" name="nombre_ct">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label for="apellido" class="form-label">Apellido</label>
+                                        <input type="text" class="form-control" id="apellido" name="apellido_ct">
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="mb-3 row">
-                                <label for="apellido" class="col-sm-2 col-form-label">Apellido</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" id="apellido">
-                                </div>
-                            </div>
-
-                            <div class="mb-3 row">
-                                <label for="fechaNacimiento" class="col-sm-5 col-form-label">Fecha de Nacimiento</label>
+                                <label for="fechaNacimiento" class="col-sm-6 col-form-label text-end">Fecha de Nacimiento</label>
                                 <div class="col-sm-6">
                                     <input type="date" class="form-control" id="fechaNacimiento">
                                 </div>
                             </div>
 
-                            <div class="mb-3 row">
-                                <label for="email" class="col-sm-2 col-form-label">Email</label>
+                            <div class="row">
                                 <div class="col-sm-6">
-                                    <input type="email" class="form-control" id="email">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email_ct">
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="mb-3 row">
-                                <label for="telefono" class="col-sm-2 col-form-label">Teléfono</label>
-                                <div class="col-sm-4">
-                                    <input type="tel" class="form-control" id="telefono">
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label for="telefono" class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" id="telefono" name="telefono_ct">
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="direccion" class="form-label">Dirección</label>
-                                <input type="text" class="form-control" id="direccion" name="direccion_ct" maxlength="255">
+                                <textarea type="text" class="form-control" id="direccion" name="direccion_ct"></textarea>
                             </div>
                         </form>
                     </div>
@@ -291,44 +295,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
                                 </div>
                             </div>
 
-                            <div class=" mb-3 row">
-                                <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
+                            <div class="row">
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control" id="nombre" name="nombre_ct">
+                                    <div class="mb-3">
+                                        <label for="nombre" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" id="nombre" name="nombre_ct">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label for="apellido" class="form-label">Apellido</label>
+                                        <input type="text" class="form-control" id="apellido" name="apellido_ct">
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class=" mb-3 row">
-                                <label for="apellido" class="col-sm-2 col-form-label">Apellido</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" id="apellido" name="apellido_ct">
-                                </div>
-                            </div>
 
                             <div class=" mb-3 row">
-                                <label for="fechaNacimiento" class="col-sm-5 col-form-label">Fecha de Nacimiento</label>
+                                <label for="fechaNacimiento" class="col-sm-6 col-form-label text-end">Fecha de Nacimiento</label>
                                 <div class="col-sm-6">
                                     <input type="date" class="form-control" id="fechaNacimiento" name="fecha_nac_ct">
                                 </div>
                             </div>
 
-                            <div class="mb-3 row">
-                                <label for="email" class="col-sm-2 col-form-label">Email</label>
+                            <div class="row">
                                 <div class="col-sm-6">
-                                    <input type="email" class="form-control" id="email" name="email_ct">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email_ct">
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="mb-3 row">
-                                <label for="telefono" class="col-sm-2 col-form-label">Teléfono</label>
-                                <div class="col-sm-4">
-                                    <input type="tel" class="form-control" id="telefono" name="telefono_ct">
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label for="telefono" class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" id="telefono" name="telefono_ct">
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="direccion" class="form-label">Dirección</label>
-                                <input type="text" class="form-control" id="direccion" name="direccion_ct" maxlength="255">
+                                <textarea type="text" class="form-control" id="direccion" name="direccion_ct"></textarea>
                             </div>
 
                             <div class="mb-3">

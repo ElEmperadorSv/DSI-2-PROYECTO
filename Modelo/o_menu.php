@@ -47,14 +47,14 @@
 
                     <a class="nav-link" href="../Vista/admin_roles.php">
                         <div class="sb-nav-link-icon"><i class="fas fa-home-lg"></i></div>
-                        Gestión de Roles
+                        Gestionar Roles
                     </a>
 
                     <!-- Gestionar Productos -->
-                    
+
                     <a class="nav-link" href="../Vista/gestion_productos.php">
                         <div class="sb-nav-link-icon"><i class="fas fa-home-lg"></i></div>
-                        Gestión de Productos
+                        Gestionar Productos
                     </a>
                     <!------------------------------------------- Administración de Sistema ------------------------------------------->
 
@@ -66,19 +66,11 @@
                     </a>
 
                     <!-- Gestionar Creditos -->
-                    <div class="sb-sidenav-menu-heading">Gestionar Créditos</div>
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCreditos" aria-expanded="false" aria-controls="collapseCreditos">
-                        <div class="sb-nav-link-icon"><i class="fas fa-money-check-alt"></i></div>
+                    <div class="sb-sidenav-menu-heading">Operaciones</div>
+                    <a class="nav-link" href="../Vista/../Vista/ba_crear_credito.php">
+                        <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                         Gestionar Créditos
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="collapseCreditos" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="../Vista/ba_crear_credito.php">Crear Crédito</a>
-                            <a class="nav-link" href="../Vista/bb_consultar_credito.php">Consultar Crédito</a>
-                            <a class="nav-link" href="../Vista/bc_creditos_activos.php">Créditos Activos</a>
-                        </nav>
-                    </div>
 
                     <!-- Gestionar Pagos -->
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePagos" aria-expanded="false" aria-controls="collapsePagos">

@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-09-2023 a las 23:30:47
+-- Tiempo de generación: 24-09-2023 a las 08:47:37
 -- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.0.28
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -90,7 +90,7 @@ CREATE TABLE `creditos_dsi` (
   `dui_ct` int(11) NOT NULL,
   `cliente` varchar(30) NOT NULL,
   `num_credito` varchar(10) NOT NULL,
-  `producto` int(11) NOT NULL,
+  `producto` varchar(30) NOT NULL,
   `cantidad_producto` int(4) NOT NULL,
   `monto` decimal(10,2) NOT NULL,
   `interes` decimal(10,2) NOT NULL,
@@ -108,7 +108,7 @@ CREATE TABLE `creditos_dsi` (
 --
 
 INSERT INTO `creditos_dsi` (`id`, `dui_ct`, `cliente`, `num_credito`, `producto`, `cantidad_producto`, `monto`, `interes`, `plazo`, `monto_total`, `monto_pendiente`, `tipo_pago`, `fecha_ini`, `fecha_fin`, `estado_credito`) VALUES
-(8, 123456789, 'Jorge Lopez', 'DSI-00008', 0, 1, 100.00, 0.05, 1, 105.00, 105.00, 'Mensual', '2023-09-21', '2023-10-21', 'FINALIZADO');
+(8, 123456789, 'Jorge Lopez', 'DSI-00008', 'Ropero', 1, 100.00, 0.05, 1, 105.00, 105.00, 'Mensual', '2023-09-21', '2023-10-21', 'FINALIZADO');
 
 --
 -- Disparadores `creditos_dsi`
@@ -164,8 +164,8 @@ CREATE TABLE `productos_dsi` (
   `nombre_pd` varchar(30) NOT NULL,
   `descripcion_pd` varchar(50) NOT NULL,
   `stock_pd` int(4) NOT NULL DEFAULT 1,
-  `categoria_pd` int(11) NOT NULL,
-  `precio_pd` decimal(6,0) NOT NULL,
+  `categoria_pd` varchar(10) NOT NULL,
+  `precio_pd` decimal(8,2) DEFAULT NULL,
   `estado_pd` enum('ACTIVO','INACTIVO') NOT NULL DEFAULT 'ACTIVO',
   `imagen` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -175,7 +175,12 @@ CREATE TABLE `productos_dsi` (
 --
 
 INSERT INTO `productos_dsi` (`id_pd`, `nombre_pd`, `descripcion_pd`, `stock_pd`, `categoria_pd`, `precio_pd`, `estado_pd`, `imagen`) VALUES
-(1, 'Silla Gamer TRKMN', 'Silla Gamer TRKMN', 1, 2, 100, 'ACTIVO', 'C:\\xampp\\htdocs\\DSI_ONE\\Vista/../Complementos/Imagenes/6a49b04ae7be5990a242b173a514e22c.jpg');
+(1, 'Ropero', 'Guardar Ropa xd', 1, 'Oficina', 100.00, 'ACTIVO', '../Complementos/Imagenes/1ea4a0ce-eaa0-4bfd-9ea9-e04e6540b1f2.jpg'),
+(4, 'PRUEBA', 'ds', 1, 'Dormitorio', 0.00, 'ACTIVO', '../Complementos/Imagenes/6a49b04ae7be5990a242b173a514e22c.jpg'),
+(5, 'Escritorio', 'mamalon xd', 3, 'Oficina', 100.89, 'ACTIVO', '../Complementos/Imagenes/6a49b04ae7be5990a242b173a514e22c.jpg'),
+(6, 'silla', 'dsad', 1, 'Oficina', 5.00, 'ACTIVO', '../Complementos/Imagenes/6a49b04ae7be5990a242b173a514e22c.jpg'),
+(7, 'dasd', 'dsad', 1, 'Dormitorio', 1.00, 'ACTIVO', '../Complementos/Imagenes/6a49b04ae7be5990a242b173a514e22c.jpg'),
+(8, 'silla', 'da', 1, 'Oficina', 0.05, 'ACTIVO', '../Complementos/Imagenes/1ea4a0ce-eaa0-4bfd-9ea9-e04e6540b1f2.jpg');
 
 -- --------------------------------------------------------
 
@@ -195,9 +200,10 @@ CREATE TABLE `roles_usuarios` (
 --
 
 INSERT INTO `roles_usuarios` (`id`, `nombre_rol`, `descripcion_rol`, `estado`) VALUES
-(1, 'Administrador', 'prueba', 'ACTIVO'),
+(1, 'Administrador', 'prueba', 'INACTIVO'),
 (2, 'Depto. de Contabilidad', 'Rol que permite ver el detalle de créditos, produc', 'ACTIVO'),
-(3, 'Cajero', 'Gestiona los créditos, usuarios, etc', 'ACTIVO');
+(3, 'Cajero', 'Gestiona los créditos, usuarios, etc', 'ACTIVO'),
+(7, 'Prueba', 'Prueba', 'ACTIVO');
 
 -- --------------------------------------------------------
 
@@ -213,7 +219,7 @@ CREATE TABLE `usuarios_dsi` (
   `email` varchar(25) NOT NULL,
   `codigo_recuperacion` varchar(6) DEFAULT NULL,
   `estado` enum('ACTIVO','INACTIVO') NOT NULL DEFAULT 'ACTIVO',
-  `rol` varchar(25) NOT NULL
+  `rol` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -222,7 +228,7 @@ CREATE TABLE `usuarios_dsi` (
 
 INSERT INTO `usuarios_dsi` (`id`, `username`, `password`, `carne`, `email`, `codigo_recuperacion`, `estado`, `rol`) VALUES
 (1, 'admin', 'admin', 'ADMIN', 'admin@admin', NULL, 'ACTIVO', 'Administrador'),
-(2, 'hgarcia', 'AG00026', 'GB15026', 'gb15026@ues.edu.sv', NULL, 'ACTIVO', 'Administrador'),
+(2, 'hgarcia', 'GB15026', 'GB15026', 'gb15026@ues.edu.sv', NULL, 'ACTIVO', 'Administrador'),
 (3, 'rongonza', 'AG00026', 'AG00026', 'ag00026@ues.edu.sv', NULL, 'ACTIVO', 'Administrador'),
 (4, 'jenherrera', 'HR08032', 'HR08032', 'hr08032@ues.edu.sv', NULL, 'ACTIVO', 'Administrador'),
 (5, 'dangarcia', 'GT19011', 'GT19011', 'gt19011@ues.edu.sv', NULL, 'ACTIVO', 'Administrador'),
@@ -307,9 +313,9 @@ ALTER TABLE `usuarios_dsi`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `carne` (`carne`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `rol_1` (`rol`) USING BTREE,
   ADD KEY `estado` (`estado`),
-  ADD KEY `username` (`username`);
+  ADD KEY `username` (`username`),
+  ADD KEY `rol` (`rol`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -343,13 +349,13 @@ ALTER TABLE `pagos_dsi`
 -- AUTO_INCREMENT de la tabla `productos_dsi`
 --
 ALTER TABLE `productos_dsi`
-  MODIFY `id_pd` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_pd` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `roles_usuarios`
 --
 ALTER TABLE `roles_usuarios`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_dsi`
@@ -365,6 +371,7 @@ ALTER TABLE `usuarios_dsi`
 -- Filtros para la tabla `creditos_dsi`
 --
 ALTER TABLE `creditos_dsi`
+  ADD CONSTRAINT `creditos_dsi_ibfk_1` FOREIGN KEY (`producto`) REFERENCES `productos_dsi` (`nombre_pd`),
   ADD CONSTRAINT `creditos_dsi_ibfk_2` FOREIGN KEY (`dui_ct`) REFERENCES `clientes_dsi` (`dui_ct`),
   ADD CONSTRAINT `creditos_dsi_ibfk_3` FOREIGN KEY (`cliente`) REFERENCES `clientes_dsi` (`nombre_completo_ct`);
 
@@ -378,7 +385,7 @@ ALTER TABLE `pagos_dsi`
 -- Filtros para la tabla `productos_dsi`
 --
 ALTER TABLE `productos_dsi`
-  ADD CONSTRAINT `productos_dsi_ibfk_1` FOREIGN KEY (`categoria_pd`) REFERENCES `categorias_dsi` (`id_cat`) ON DELETE CASCADE;
+  ADD CONSTRAINT `productos_dsi_ibfk_1` FOREIGN KEY (`categoria_pd`) REFERENCES `categorias_dsi` (`nombre_cat`);
 
 --
 -- Filtros para la tabla `usuarios_dsi`

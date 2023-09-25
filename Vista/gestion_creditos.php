@@ -303,13 +303,13 @@ function generarNumeroCredito($conn)
                                     // Incluir el archivo de conexión a la base de datos
                                     require_once "../Controlador/db_connection.php";
                                     // Consulta los datos de la tabla clientes_dsi
-                                    $sql = "SELECT dui, nombre, apellido FROM clientes_dsi";
+                                    $sql = "SELECT dui_ct, nombre_ct, apellido_ct FROM clientes_dsi";
                                     $result = mysqli_query($conn, $sql);
                                     // Verifica si se encontraron registros
                                     if (mysqli_num_rows($result) > 0) {
                                         while ($row = mysqli_fetch_assoc($result)) {
-                                            $cliente_dui = $row['dui'];
-                                            $cliente_nombre = $row['nombre'] . " " . $row['apellido'];
+                                            $cliente_dui = $row['dui_ct'];
+                                            $cliente_nombre = $row['nombre_ct'] . " " . $row['apellido_ct'];
                                             echo "<option value='$cliente_dui'>$cliente_dui - $cliente_nombre</option>";
                                         }
                                     } else {

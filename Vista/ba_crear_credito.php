@@ -12,56 +12,96 @@ function validarCampos($campos)
     return true;
 }
 
-// Verificar si se ha enviado el formulario de agregar cliente
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Verificar si se ha enviado el formulario de agregar crédito
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitAgregarCredito'])) {
     // Verificar si todos los campos requeridos se han llenado
-    $camposRequeridos = array('num_credito', 'dui', 'nombre_completo', 'monto', 'tipo_pago', 'fecha_ini', 'fecha_fin', 'plazo', 'interes', 'monto_total', 'monto_pendiente');
+    $camposRequeridos = array('dui_ct', 'nombre_completo_ct', 'num_credito', 'producto', 'cantidad_producto', 'tipo_pago', 'plazo', 'fecha_ini', 'fecha_fin', 'monto', 'interes', 'monto_total', 'monto_pendiente');
     if (validarCampos($camposRequeridos)) {
-        // Obtener los datos del cliente desde el formulario
-        $num_credito = $_POST['num_credito'];
-        $dui = $_POST['dui'];
-        $nombre_completo = $_POST['nombre_completo'];
-        $monto = $_POST['monto'];
-        $tipo_pago = $_POST['tipo_pago'];
-        $fecha_ini = $_POST['fecha_ini'];
-        $fecha_fin = $_POST['fecha_fin'];
+        // Obtener los datos del nuevo crédito desde el formulario
+        $duiCliente = $_POST['dui_ct'];
+        $cliente = $_POST['nombre_completo_ct'];
+        $numCredito = $_POST['num_credito'];
+        $producto = $_POST['producto'];
+        $cantidadProducto = $_POST['cantidad_producto'];
+        $tipoPago = $_POST['tipo_pago'];
         $plazo = $_POST['plazo'];
+        $fechaInicio = $_POST['fecha_ini'];
+        $fechaFin = $_POST['fecha_fin'];
+        $monto = $_POST['monto'];
         $interes = $_POST['interes'];
-        $monto_total = $_POST['monto_total'];
-        $monto_pendiente = $_POST['monto_pendiente'];
+        $montoTotal = $_POST['monto_total'];
+        $montoPendiente = $_POST['monto_pendiente'];
 
-        // Consulta de inserción
-        $query = "INSERT INTO creditos_dsi (num_credito, dui, nombre_completo, monto, tipo_pago, fecha_ini, fecha_fin, plazo, interes, monto_total, monto_pendiente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Consulta para verificar el stock del producto
+        $consultaStock = "SELECT stock_pd FROM productos_dsi WHERE nombre_pd = ?";
+        $stmtStock = $conn->prepare($consultaStock);
+        $stmtStock->bind_param("s", $producto);
+        $stmtStock->execute();
+        $stmtStock->bind_result($stockProducto);
+        $stmtStock->fetch();
+        $stmtStock->close();
 
-        // Preparar la consulta
-        $stmt = $conn->prepare($query);
+        // Verificar si hay suficiente stock
+        if ($stockProducto >= $cantidadProducto) {
+            // Restar la cantidad correspondiente al stock del producto
+            $nuevoStock = $stockProducto - $cantidadProducto;
+            
+            // Actualizar el stock del producto
+            $actualizarStock = "UPDATE productos_dsi SET stock_pd = ? WHERE nombre_pd = ?";
+            $stmtActualizarStock = $conn->prepare($actualizarStock);
+            $stmtActualizarStock->bind_param("is", $nuevoStock, $producto);
+            $stmtActualizarStock->execute();
+            $stmtActualizarStock->close();
 
-        // Verificar si la preparación de la consulta fue exitosa
-        if ($stmt) {
-            // Vincular los parámetros de la consulta
-            $stmt->bind_param("sssssssssss", $num_credito, $dui, $nombre_completo, $monto, $tipo_pago, $fecha_ini, $fecha_fin, $plazo, $interes, $monto_total, $monto_pendiente);
-
-            // Ejecutar la consulta
-            $stmt->execute();
-
-            // Verificar si la inserción fue exitosa
-            if ($stmt->affected_rows > 0) {
-                // La inserción fue exitosa, realizar las acciones adicionales necesarias
-                // ...
-                echo "Registro insertado exitosamente.";
-            } else {
-                echo "Error al insertar el registro en la base de datos.";
+            // Verificar si el stock llega a cero y cambiar el estado a INACTIVO
+            if ($nuevoStock == 0) {
+                $actualizarEstado = "UPDATE productos_dsi SET estado_pd = 'INACTIVO' WHERE nombre_pd = ?";
+                $stmtActualizarEstado = $conn->prepare($actualizarEstado);
+                $stmtActualizarEstado->bind_param("s", $producto);
+                $stmtActualizarEstado->execute();
+                $stmtActualizarEstado->close();
             }
 
-            // Cerrar la declaración
-            $stmt->close();
+            // Consulta de inserción para créditos
+            $query = "INSERT INTO creditos_dsi (dui_ct, cliente, num_credito, producto, cantidad_producto, tipo_pago, plazo, fecha_ini, fecha_fin, monto, interes, monto_total, monto_pendiente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            // Preparar la consulta
+            $stmt = $conn->prepare($query);
+
+            // Verificar si la preparación de la consulta fue exitosa
+            if ($stmt) {
+                // Vincular los parámetros
+                $stmt->bind_param("sssssssssssss", $duiCliente, $cliente, $numCredito, $producto, $cantidadProducto, $tipoPago, $plazo, $fechaInicio, $fechaFin, $monto, $interes, $montoTotal, $montoPendiente);
+
+                // Ejecutar la consulta
+                $stmt->execute();
+
+                // Verificar si la inserción fue exitosa
+                if ($stmt->affected_rows > 0) {
+                    // La inserción fue exitosa, realizar las acciones adicionales necesarias
+                    echo "<script>alert('Nuevo registro realizado con exito.');</script>";
+
+                    // Redireccionar a la página de gestión de créditos o a donde desees
+                    header("Location: ../Vista/ba_crear_credito.php");
+                    exit();
+                } else {
+                    // Ocurrió un error al insertar el nuevo registro
+                    echo "<script>alert('Error al insertar el nuevo registro en la base de datos.');</script>";
+                }
+
+                // Cerrar la declaración
+                $stmt->close();
+            } else {
+                // Ocurrió un error al preparar la consulta
+                echo "<script>alert('Error al preparar la consulta.');</script>";
+            }
         } else {
-            echo "Error en la preparación de la consulta: " . $conn->error;
+            // No hay suficiente stock del producto
+            echo "<script>alert('No hay suficiente stock del producto.');</script>";
         }
-    } else {
-        echo "Todos los campos requeridos deben ser llenados.";
     }
 }
+
 
 // Función para generar el número de crédito automático
 function generarNumeroCredito($conn)
@@ -241,9 +281,8 @@ function generarNumeroCredito($conn)
                                         } else {
                                             echo "<option value='' disabled>No se encontraron clientes</option>";
                                         }
-                                        // Cierra la conexión a la base de datos
-                                        mysqli_close($conn);
-                                        ?>*/
+                                        
+                                        ?>
                                     </select>
                                 </div>
                                 <div class="col-6">
@@ -256,16 +295,31 @@ function generarNumeroCredito($conn)
                             <!-- Información del Producto -->
                             <h6 style="color: blue;">Información del Producto</h6>
                             <hr>
-
+                            <?php
+                            // Consulta SQL para obtener productos
+                            $query = "SELECT id_pd, nombre_pd FROM productos_dsi";
+                            $result = $conn->query($query);
+                            ?>
                             <div class="row mb-3">
                                 <div class="col-6">
                                     <label for="producto" class="form-label">Producto</label>
-                                    <input class="form-control" id="nombre_pd" name="nombre_pd">
+                                    <select class="form-select form-control" id="producto" name="producto" required>
+                                        <option value="" selected disabled>Seleccionar producto</option>
+                                        <?php
+                                        // Generar las opciones dinámicamente
+                                        if ($result->num_rows > 0) {
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo '<option value="' . $row["nombre_pd"] . '">' . $row["nombre_pd"] . '</option>';
+                                            }
+                                        }
+
+                                        ?>                                 
+                                    </select>
                                 </div>
 
                                 <div class="col-6">
-                                    <label for="cantidad" class="form-label">Cantidad</label>
-                                    <input type="number" step="1.0" class="form-control" id="cantidad" name="cantidad">
+                                    <label for="cantidad_producto" class="form-label">Cantidad</label>
+                                    <input type="number" step="1.0" class="form-control" id="cantidad_producto" name="cantidad_producto">
                                 </div>
                             </div>
 
@@ -332,7 +386,7 @@ function generarNumeroCredito($conn)
                             </div>
 
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Crear Crédito</button>
+                                <button type="submit" class="btn btn-primary" name="submitAgregarCredito">Crear Crédito</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             </div>
                         </form>
@@ -475,20 +529,44 @@ function generarNumeroCredito($conn)
                     key: 'id'
                 },
                 {
+                    header: 'DUI',
+                    key: 'dui_ct'
+                },
+                {
+                    header: 'Nombre Completo',
+                    key: 'cliente'
+                },
+                {
                     header: 'N° Crédito',
                     key: 'num_credito'
                 },
                 {
-                    header: 'DUI',
-                    key: 'dui'
+                    header: 'Producto',
+                    key: 'producto'
                 },
                 {
-                    header: 'Nombre Completo',
-                    key: 'nombre_completo'
+                    header: 'Cantidad Producto',
+                    key: 'cantidad_producto'
                 },
                 {
                     header: 'Monto',
                     key: 'monto'
+                },
+                {
+                    header: 'Interes',
+                    key: 'interes'
+                },
+                {
+                    header: 'Plazo',
+                    key: 'plazo'
+                },
+                {
+                    header: 'Monto Total',
+                    key: 'monto_total'
+                },
+                {
+                    header: 'Monto Pendiente',
+                    key: 'monto_pendiente'
                 },
                 {
                     header: 'Tipo Pago',
@@ -502,21 +580,10 @@ function generarNumeroCredito($conn)
                     header: 'Fecha Fin',
                     key: 'fecha_fin'
                 },
+                
                 {
-                    header: 'Plazo',
-                    key: 'plazo'
-                },
-                {
-                    header: 'Interes',
-                    key: 'interes'
-                },
-                {
-                    header: 'Monto Total',
-                    key: 'monto_total'
-                },
-                {
-                    header: 'Cuota',
-                    key: 'monto_pendiente'
+                    header: 'Estado',
+                    key: 'estado_credito'
                 }
             ];
 

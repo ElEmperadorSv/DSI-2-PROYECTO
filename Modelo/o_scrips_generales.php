@@ -32,6 +32,10 @@
 <script src="https://unpkg.com/exceljs/dist/exceljs.min.js"></script>
 <script src="../Complementos/JS/script.js"></script>
 
+
+<link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
 <script>
     $(document).ready(function() {
         $('#datatablesSimple').DataTable({

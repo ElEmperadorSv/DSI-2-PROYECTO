@@ -50,6 +50,13 @@
                         Gestionar Roles
                     </a>
 
+                    <!-- Gestionar Menus -->
+
+                    <a class="nav-link" href="../Vista/admin_menus.php">
+                        <div class="sb-nav-link-icon"><i class="fas fa-home-lg"></i></div>
+                        Gestionar Menús
+                    </a>
+
                     <!-- Gestionar Productos -->
 
                     <a class="nav-link" href="../Vista/gestion_productos.php">

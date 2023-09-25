@@ -44,7 +44,7 @@
                                                 if (mysqli_num_rows($result) > 0) {
                                                     while ($row = mysqli_fetch_assoc($result)) {
                                                         $rol_nombre = $row['nombre_rol'];
-                                                        echo "<option value='$rol_id'>$rol_nombre</option>";
+                                                        echo "<option value='$rol_nombre'>$rol_nombre</option>"; // Modified this line
                                                     }
                                                 } else {
                                                     echo "<option value='' disabled>No se encontraron roles</option>";
@@ -66,48 +66,36 @@
                     </div>
                 </div>
 
-                <div class="container mt-4">
-                    <div class="col-md-6 mb-4">
-                        <div class="card" style="max-height: 200px;">
-                            <div class="card-header">
-                                <i class="fas fa-table me-1"></i> Vistas disponibles
-                            </div>
-                            <div class="card-body" id="vistas-disponibles" style="display: none;">
-                                <form>
-                                    <ul class="list-group" id="vistasList">
-                                        <?php
-                                        // Incluir el archivo de conexión a la base de datos
-                                        require_once "../Controlador/db_connection.php";
+                <div class="card-body" id="vistas-disponibles" style="display: none;">
+                    <form id="vistas-form">
+                        <ul class="list-group">
+                            <?php
+                            // Definir las vistas disponibles desde la base de datos o donde las tengas almacenadas
+                            $vistas_disponibles = [
+                                'Vista A' => 'Inicio',
+                                'Vista B' => 'Gestionar Usuarios',
+                                'Vista C' => 'Gestionar Rol',
+                                'Vista D' => 'Gestionar Vistas',
+                                'Vista E' => 'Gestionar Productos',
+                                'Vista F' => 'Gestionar Clientes',
+                                'Vista G' => 'Gestionar Créditos'
+                            ];
 
-                                        // Consultar datos
-                                        $sql = "SELECT * FROM vistas_dsi";
-                                        $result = $conn->query($sql);
-
-                                        if ($result->num_rows > 0) {
-                                            // Procesar los resultados
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo "ID: " . $row["id"] . " - Nombre: " . $row["nombre"] . "<br>";
-                                            }
-                                        } else {
-                                            echo "0 resultados";
-                                        }
-
-                                        // Cerrar la conexión
-                                        $conn->close();
-                                        ?>
-                                    </ul>
-                                </form>
-                            </div>
-                            <div class="card-footer" id="card-footer" style="display: none;">
-                                <div class="d-flex justify-content-center flex-wrap">
-                                    <button class="btn btn-primary mx-2 my-1">Guardar Asignación</button>
-                                    <button class="btn btn-secondary mx-2 my-1" onclick="cancelarAsignacion()">Cancelar</button>
-                                </div>
-                            </div>
+                            // Mostrar cada vista disponible como un checkbox
+                            foreach ($vistas_disponibles as $key => $value) {
+                                echo "<li class='list-group-item'>
+                        <div class='form-check'>
+                            <input class='form-check-input' type='checkbox' name='vistas[]' value='$key' id='$key'>
+                            <label class='form-check-label' for='$key'>$value</label>
                         </div>
-                    </div>
+                    </li>";
+                            }
+                            ?>
+                        </ul>
+                        <button type="submit" class="btn btn-primary mx-2 my-1">Guardar Asignación</button>
+                        <button type="button" class="btn btn-secondary mx-2 my-1" onclick="cancelarAsignacion()">Cancelar</button>
+                    </form>
                 </div>
-
 
 
                 <!-- Termina la Funcionalidad de la Vista-->
@@ -120,52 +108,50 @@
         <?php include '../Modelo/o_scrips_generales.php'; ?>
 
         <script>
-            /*//Body Card
             document.getElementById('buscar-button').addEventListener('click', function() {
                 document.getElementById('vistas-disponibles').style.display = 'block';
                 document.getElementById('card-footer').style.display = 'block';
             });
 
-            // Footer Card
-            function cancelarAsignacion() {
-                document.getElementById('vistas-disponibles').style.display = 'none';
-                document.getElementById('card-footer').style.display = 'none';
-                document.getElementById('roles').selectedIndex = 0;
-            }
-            */
-            // Obtener el rol seleccionado y mostrar las vistas correspondientes
-            document.getElementById('buscar-button').addEventListener('click', function() {
-                const rolSeleccionado = document.getElementById('roles').value;
-                // Aquí puedes hacer algo con el rol seleccionado, como cargar las vistas correspondientes.
-                console.log('Rol seleccionado:', rolSeleccionado);
-
-                // Mostrar las vistas disponibles
-                document.getElementById('vistas-disponibles').style.display = 'block';
-                document.getElementById('card-footer').style.display = 'block';
-            });
-
-            // Restaurar selección de rol y ocultar vistas al cancelar
             function cancelarAsignacion() {
                 document.getElementById('vistas-disponibles').style.display = 'none';
                 document.getElementById('card-footer').style.display = 'none';
                 document.getElementById('roles').selectedIndex = 0;
             }
 
-            // Manejar el evento de cambio de selección de checkbox
-            const checkboxes = document.querySelectorAll('input[name="vista"]');
-            checkboxes.forEach((checkbox) => {
-                checkbox.addEventListener('change', handleCheckboxChange);
-            });
+            document.getElementById('vistas-form').addEventListener('submit', function(event) {
+                event.preventDefault();
 
-            function handleCheckboxChange() {
-                const selectedCheckboxes = Array.from(checkboxes).filter(checkbox => checkbox.checked);
-                const cardFooter = document.getElementById('card-footer');
-                if (selectedCheckboxes.length > 0) {
-                    cardFooter.style.display = 'block';
-                } else {
-                    cardFooter.style.display = 'none';
-                }
-            }
+                const selectedRole = document.getElementById('roles').value;
+                const selectedViews = [];
+                const checkboxes = document.querySelectorAll('input[name="vistas[]"]:checked');
+
+                checkboxes.forEach(function(checkbox) {
+                    selectedViews.push(checkbox.value);
+                });
+
+                // Enviar los datos al servidor utilizando AJAX
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            alert('Asignación guardada exitosamente.');
+                        } else {
+                            alert('Hubo un error al guardar la asignación.');
+                        }
+                    }
+                };
+
+                const formData = new FormData();
+                formData.append('rol', selectedRole);
+                selectedViews.forEach(function(view) {
+                    formData.append('vistas[]', view);
+                });
+
+                // Cambia la URL a la que enviar la solicitud según tu configuración
+                xhr.open('POST', '../Controlador/guardar_asignacion.php'); // Cambia la URL según tu configuración
+                xhr.send(formData);
+            });
         </script>
 </body>
 

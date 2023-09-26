@@ -41,26 +41,26 @@
                     <!-- Gestionar Usuarios -->
                     <div class="sb-sidenav-menu-heading">Administración</div>
                     <a class="nav-link" href="../Vista/admin_usuarios.php">
-                        <div class="sb-nav-link-icon"><i class="fas fa-home-lg"></i></div>
+                        <div class="sb-nav-link-icon"><i class="fas fa-user-edit"></i></div>
                         Gestionar Usuarios
                     </a>
 
                     <a class="nav-link" href="../Vista/admin_roles.php">
-                        <div class="sb-nav-link-icon"><i class="fas fa-home-lg"></i></div>
+                        <div class="sb-nav-link-icon"><i class="fas fa-house-user"></i></div>
                         Gestionar Roles
                     </a>
 
                     <!-- Gestionar Menus -->
 
                     <a class="nav-link" href="../Vista/admin_menus.php">
-                        <div class="sb-nav-link-icon"><i class="fas fa-home-lg"></i></div>
+                        <div class="sb-nav-link-icon"><i class="fas fa-chalkboard-teacher"></i></div>
                         Gestionar Menús
                     </a>
 
                     <!-- Gestionar Productos -->
 
                     <a class="nav-link" href="../Vista/gestion_productos.php">
-                        <div class="sb-nav-link-icon"><i class="fas fa-home-lg"></i></div>
+                        <div class="sb-nav-link-icon"><i class="fab fa-suse"></i></div>
                         Gestionar Productos
                     </a>
                     <!------------------------------------------- Administración de Sistema ------------------------------------------->
@@ -75,7 +75,7 @@
                     <!-- Gestionar Creditos -->
                     <div class="sb-sidenav-menu-heading">Operaciones</div>
                     <a class="nav-link" href="../Vista/../Vista/ba_crear_credito.php">
-                        <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
+                        <div class="sb-nav-link-icon"><i class="fas fa-file-invoice-dollar"></i></div>
                         Gestionar Créditos
                     </a>
 

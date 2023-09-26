@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitAgregarCredito'
         if ($stockProducto >= $cantidadProducto) {
             // Restar la cantidad correspondiente al stock del producto
             $nuevoStock = $stockProducto - $cantidadProducto;
-            
+
             // Actualizar el stock del producto
             $actualizarStock = "UPDATE productos_dsi SET stock_pd = ? WHERE nombre_pd = ?";
             $stmtActualizarStock = $conn->prepare($actualizarStock);
@@ -219,22 +219,6 @@ function generarNumeroCredito($conn)
 
         <?php include '../Modelo/o_scrips_generales.php'; ?>
 
-        <!-------------- Script para el scroll horizontal en card de datatable -------------->
-        <script>
-            $(document).ready(function() {
-                if ($.fn.DataTable.isDataTable('#datatablesSimple')) {
-                    $('#datatablesSimple').DataTable().destroy();
-                }
-
-                $('#datatablesSimple').DataTable({
-                    "scrollX": true,
-                    "autoWidth": true
-                });
-            });
-        </script>
-        <!-------------- Script para el scroll horizontal en card de datatable -------------->
-
-
         <!------------------------------------ Agregar Crédito Modal ------------------------------------>
         <div class="modal fade" id="addCreditoModal" tabindex="-1" aria-labelledby="addCreditoModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -281,7 +265,7 @@ function generarNumeroCredito($conn)
                                         } else {
                                             echo "<option value='' disabled>No se encontraron clientes</option>";
                                         }
-                                        
+
                                         ?>
                                     </select>
                                 </div>
@@ -313,7 +297,7 @@ function generarNumeroCredito($conn)
                                             }
                                         }
 
-                                        ?>                                 
+                                        ?>
                                     </select>
                                 </div>
 
@@ -397,15 +381,25 @@ function generarNumeroCredito($conn)
     </div>
     <!------------------------------------ Agregar Crédito Modal ------------------------------------>
 
+    <!-------------- Script para el scroll horizontal en card de datatable -------------->
     <script>
         $(document).ready(function() {
-            $('#datatablesSimple').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            var dataTableConfig = {
+                scrollX: true,
+                autoWidth: true,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
                 }
-            });
+            };
+
+            if ($.fn.DataTable.isDataTable('#datatablesSimple')) {
+                $('#datatablesSimple').DataTable().destroy();
+            }
+
+            $('#datatablesSimple').DataTable(dataTableConfig);
         });
     </script>
+    <!-------------- Script para el scroll horizontal en card de datatable -------------->
 
 
     <script>
@@ -580,7 +574,7 @@ function generarNumeroCredito($conn)
                     header: 'Fecha Fin',
                     key: 'fecha_fin'
                 },
-                
+
                 {
                     header: 'Estado',
                     key: 'estado_credito'

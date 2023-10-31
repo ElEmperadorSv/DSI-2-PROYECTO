@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitGuardar'])) {
 // Verificar si se ha enviado el formulario de actualizar producto
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) {
     // Verificar si todos los campos requeridos se han llenado
-    $camposRequeridos = array('id_pd', 'nombre_pd', 'descripcion_pd', 'stock_pd', 'categoria_pd', 'precio_pd');
+    $camposRequeridos = array('id_pd', 'nombre_pd', 'descripcion_pd', 'stock_pd', 'categoria_pd', 'precio_pd', 'estado_pd');
     if (validarCampos($camposRequeridos)) {
         // Obtener los datos actualizados del producto desde el formulario
         $id = $_POST['id_pd'];
@@ -97,56 +97,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
         $stockProducto = $_POST['stock_pd'];
         $categoriaProducto = $_POST['categoria_pd'];
         $precioProducto = $_POST['precio_pd'];
+        // Calcular el estado del producto
+        $estadoProducto = ($stockProducto == 0) ? 'INACTIVO' : 'ACTIVO';
+
+        // Calcular el estado del producto
+        if ($stockProducto <= 0) {
+            $estadoProducto = 'INACTIVO';
+        } else {
+            $estadoProducto = 'ACTIVO';
+        }
 
         // Procesamiento de la imagen (solo si se proporciona una nueva imagen)
         if (!empty($_FILES['imagen']['name'])) {
-            $imagenNombre = $_FILES['imagen']['name'];
-            $imagenTmp = $_FILES['imagen']['tmp_name'];
-            $imagenDestino = '../Complementos/Imagenes/' . $imagenNombre;  // Ruta donde se guardará la imagen
-
-            if (move_uploaded_file($imagenTmp, $imagenDestino)) {
-                // La imagen se ha cargado correctamente, ahora puedes guardar la ruta en la base de datos
-
-                // Update the image URL in the database
-                $queryUpdateImage = "UPDATE productos_dsi SET imagen = ? WHERE id_pd = ?";
-                $stmtUpdateImage = $conn->prepare($queryUpdateImage);
-
-                if ($stmtUpdateImage) {
-                    $stmtUpdateImage->bind_param("si", $imagenDestino, $id);
-                    $stmtUpdateImage->execute();
-                    $stmtUpdateImage->close();
-                } else {
-                    echo "Error al preparar la consulta para actualizar la imagen: " . $conn->error;
-                }
-            } else {
-                echo "Error al mover la imagen al directorio de destino.";
-            }
+            // Tu lógica para manejar la imagen
         } else {
             // Mantener la imagen actual si no se proporciona una nueva
             $imagenDestino = $_POST['imagen_actual_edit'];
         }
 
-        // Consulta de actualización para los otros campos
-        $query = "UPDATE productos_dsi SET nombre_pd = ?, descripcion_pd = ?, stock_pd = ?, categoria_pd = ?, precio_pd = ? WHERE id_pd = ?";
+        // Consulta de actualización para los otros campos y el estado
+        $query = "UPDATE productos_dsi SET nombre_pd = ?, descripcion_pd = ?, stock_pd = ?, categoria_pd = ?, precio_pd = ?, estado_pd = ? WHERE id_pd = ?";
         // Preparar la consulta
         $stmt = $conn->prepare($query);
         if ($stmt) {
             // Vincular los parámetros de la consulta
-            $stmt->bind_param("sssssi", $nombreProducto, $descripcionProducto, $stockProducto, $categoriaProducto, $precioProducto, $id);
+            $stmt->bind_param("ssssssi", $nombreProducto, $descripcionProducto, $stockProducto, $categoriaProducto, $precioProducto, $estadoProducto, $id);
 
             // Ejecutar la consulta
-            $stmt->execute();
-
-            // Verificar si la actualización fue exitosa
-            if ($stmt->affected_rows > 0) {
-                // La actualización fue exitosa, realizar las acciones adicionales necesarias
-                // ...
+            if ($stmt->execute()) {
+                // La actualización fue exitosa
+                echo "Producto actualizado correctamente.";
 
                 // Redireccionar al producto a la página de gestión
                 header("Location: ../Vista/gestion_productos.php", true, 303);
                 exit();
             } else {
-                echo "Error al actualizar el registro en la base de datos.";
+                echo "Error al actualizar el registro en la base de datos: " . $stmt->error;
             }
 
             // Cerrar la declaración
@@ -293,7 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                         <label for="stock_pd" class="form-label">Stock</label>
-                                        <input type="number" class="form-control" id="stock_pd" name="stock_pd" required>
+                                        <input type="number" step="1.00" class="form-control" id="stock_pd" name="stock_pd" required>
                                     </div>
                                 </div>
 
@@ -372,7 +358,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar'])) 
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                         <label for="stock_pd_edit" class="form-label">Stock</label>
-                                        <input type="number" class="form-control" id="stock_pd_edit" name="stock_pd" required>
+                                        <input type="number" step="1.00" class="form-control" id="stock_pd_edit" name="stock_pd" required>
                                     </div>
                                 </div>
 

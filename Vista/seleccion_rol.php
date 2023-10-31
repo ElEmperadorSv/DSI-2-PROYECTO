@@ -8,14 +8,15 @@ if (!isset($_SESSION['username'])) {
 }
 
 // Obtener los roles disponibles desde la base de datos
-$query = "SELECT * FROM roles_usuarios";
+$usuario = $_SESSION['username'];
+$query = "SELECT rol FROM usuarios_dsi WHERE username = '$usuario'";
 $result = $conn->query($query);
 
 // Verificar si se obtuvieron resultados
 if ($result && $result->num_rows > 0) {
     $roles_disponibles = array();
     while ($row = $result->fetch_assoc()) {
-        $roles_disponibles[] = $row['nombre_rol'];
+        $roles_disponibles[] = $row['rol'];
     }
 } else {
     $roles_disponibles = array(); // No se encontraron roles
@@ -63,6 +64,7 @@ if ($result && $result->num_rows > 0) {
                                 <div class="form-group">
                                     <label for="rol">Selecciona tu rol:</label>
                                     <select class="form-select" id="rol" name="rol">
+                                    <option value="" disabled selected>Seleccionar Rol</option>
                                         <?php
                                         // Mostrar los roles disponibles en el select
                                         foreach ($roles_disponibles as $rol) {

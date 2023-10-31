@@ -23,8 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitGuardar'])) {
         $carne = $_POST['carne'];
         $email = $_POST['email'];
         $rol = $_POST['rol'];
+        $rolesSeleccionados = $_POST['roles'];
 
-        // Consulta de inserción
+        // Consulta de inserción 
         $query = "INSERT INTO usuarios_dsi (username, password, carne, email, rol) VALUES (?, ?, ?, ?, ?)";
 
         // Preparar la consulta
@@ -47,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitGuardar'])) {
                 header("Location: ../Vista/admin_usuarios.php");
                 exit();
             } else {
-                // Ocurrió un error al insertar el registro
+                // Ocurrió un error al insertar el registro 
                 echo "Error al insertar el registro en la base de datos.";
             }
 
@@ -101,7 +102,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar
                 header("Location: ../Vista/admin_usuarios.php");
                 exit();
             } else {
-                // Ocurrió un error al actualizar el registro
+                // Ocurrió un error al actualizar el registro 
                 echo "Error al actualizar el registro en la base de datos.";
             }
 
@@ -229,7 +230,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar
 
                             <div class="mb-3">
                                 <label for="rol" class="form-label">Rol</label>
-                                <select class="form-select" id="rol" name="rol" required>
+                                <select class="form-select" id="rol" name="rol" multiple required>
                                 </select>
                             </div>
 
@@ -280,7 +281,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitActualizar
 
                             <div class="mb-3">
                                 <label for="rol" class="form-label">Rol</label>
-                                <select class="form-select" id="rol" name="rol" required>
+                                <select class="form-select" id="rol" name="rol" multiple required>
                                 </select>
                             </div>
 

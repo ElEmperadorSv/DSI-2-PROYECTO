@@ -39,6 +39,7 @@ if ($result->num_rows > 0) {
     $html .= '<th>Interes</th>';
     $html .= '<th>Plazo</th>';
     $html .= '<th>Monto Total</th>';
+    $html .= '<th>Cuota</th>';
     $html .= '<th>Monto Pendiente</th>';
     $html .= '<th>Tipo Pago</th>';
     $html .= '<th>Fecha Inicio</th>';
@@ -61,6 +62,7 @@ if ($result->num_rows > 0) {
         $html .= '<td>' . $row['interes'] . '</td>';
         $html .= '<td>' . $row['plazo'] . '</td>';
         $html .= '<td>' . $row['monto_total'] . '</td>';
+        $html .= '<td>' . $row['cuota'] . '</td>';
         $html .= '<td>' . $row['monto_pendiente'] . '</td>';
         $html .= '<td>' . $row['tipo_pago'] . '</td>';
         $fecha_ini = date('d-m-Y', strtotime($row['fecha_ini']));

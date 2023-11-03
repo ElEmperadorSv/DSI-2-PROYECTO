@@ -87,7 +87,7 @@
                     </a>
                     <div class="collapse" id="collapsePagos" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="../Vista/ca_realizar_pago.php">Realizar Pago</a>
+                            <a class="nav-link" href="../Vista/gestion_pagos.php">Realizar Pago</a>
                             <a class="nav-link" href="../Vista/cb_consultar_pagos.php">Consultar Pagos</a>
                             <a class="nav-link" href="../Vista/cc_pagos_enmora.php">Pagos en Mora</a>
                         </nav>

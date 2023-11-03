@@ -15,7 +15,7 @@ function validarCampos($campos)
 // Verificar si se ha enviado el formulario de agregar crédito
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitAgregarCredito'])) {
     // Verificar si todos los campos requeridos se han llenado
-    $camposRequeridos = array('dui_ct', 'nombre_completo_ct', 'num_credito', 'producto', 'cantidad_producto', 'tipo_pago', 'plazo', 'fecha_ini', 'fecha_fin', 'monto', 'interes', 'monto_total', 'monto_pendiente');
+    $camposRequeridos = array('dui_ct', 'nombre_completo_ct', 'num_credito', 'producto', 'cantidad_producto', 'tipo_pago', 'plazo', 'fecha_ini', 'fecha_fin', 'monto', 'interes', 'monto_total', 'cuota', 'monto_pendiente');
     if (validarCampos($camposRequeridos)) {
         // Obtener los datos del nuevo crédito desde el formulario
         $duiCliente = $_POST['dui_ct'];
@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitAgregarCredito'
         $monto = $_POST['monto'];
         $interes = $_POST['interes'];
         $montoTotal = $_POST['monto_total'];
+        $cuota = $_POST['cuota'];
         $montoPendiente = $_POST['monto_pendiente'];
 
         // Consulta para verificar el stock del producto
@@ -63,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitAgregarCredito'
             }
 
             // Consulta de inserción para créditos
-            $query = "INSERT INTO creditos_dsi (dui_ct, cliente, num_credito, producto, cantidad_producto, tipo_pago, plazo, fecha_ini, fecha_fin, monto, interes, monto_total, monto_pendiente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO creditos_dsi (dui_ct, cliente, num_credito, producto, cantidad_producto, tipo_pago, plazo, fecha_ini, fecha_fin, monto, interes, monto_total, cuota, monto_pendiente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             // Preparar la consulta
             $stmt = $conn->prepare($query);
@@ -71,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitAgregarCredito'
             // Verificar si la preparación de la consulta fue exitosa
             if ($stmt) {
                 // Vincular los parámetros
-                $stmt->bind_param("sssssssssssss", $duiCliente, $cliente, $numCredito, $producto, $cantidadProducto, $tipoPago, $plazo, $fechaInicio, $fechaFin, $monto, $interes, $montoTotal, $montoPendiente);
+                $stmt->bind_param("ssssssssssssss", $duiCliente, $cliente, $numCredito, $producto, $cantidadProducto, $tipoPago, $plazo, $fechaInicio, $fechaFin, $monto, $interes, $montoTotal, $cuota, $montoPendiente);
 
                 // Ejecutar la consulta
                 $stmt->execute();
@@ -165,6 +166,7 @@ function generarNumeroCredito($conn)
                                     <th>Interés</th>
                                     <th>Plazo</th>
                                     <th>Monto Total</th>
+                                    <th>Cuota</th>
                                     <th>Monto Pendiente</th>
                                     <th>Tipo de Pago</th>
                                     <th>Fecha de Inicio</th>
@@ -194,6 +196,7 @@ function generarNumeroCredito($conn)
                                         echo "<td>" . $row['interes'] . "</td>";
                                         echo "<td>" . $row['plazo'] . "</td>";
                                         echo "<td>" . $row['monto_total'] . "</td>";
+                                        echo "<td>" . $row['cuota'] . "</td>";
                                         echo "<td>" . $row['monto_pendiente'] . "</td>";
                                         echo "<td>" . $row['tipo_pago'] . "</td>";
                                         echo "<td>" . $row['fecha_ini'] . "</td>";
@@ -364,8 +367,11 @@ function generarNumeroCredito($conn)
                                     <input type="text" class="form-control" id="monto_total" name="monto_total" readonly>
                                 </div>
                                 <div class="col-3">
-                                    <label for="monto_pendiente" class="form-label">Cuota por plazo</label>
-                                    <input type="text" class="form-control" id="monto_pendiente" name="monto_pendiente" readonly>
+                                    <label for="cuota" class="form-label">Cuota por plazo</label>
+                                    <input type="text" class="form-control" id="cuota" name="cuota" readonly>
+                                </div>
+                                <div class="col-3">
+                                    <input type="hidden" class="form-control" id="monto_pendiente" name="monto_pendiente" readonly>
                                 </div>
                             </div>
 
@@ -465,7 +471,7 @@ function generarNumeroCredito($conn)
             }
         }
 
-        // Calcular el monto pendiente según el monto total, el tipo de pago y el plazo seleccionado
+        // Calcular cuota según el monto total, el tipo de pago y el plazo seleccionado
         document.getElementById("monto_total").addEventListener("input", recalcularMontoPendiente);
         document.getElementById("tipo_pago").addEventListener("change", recalcularMontoPendiente);
         document.getElementById("plazo").addEventListener("change", recalcularMontoPendiente);
@@ -475,12 +481,12 @@ function generarNumeroCredito($conn)
             var tipoPago = document.getElementById("tipo_pago").value;
             var plazo = parseInt(document.getElementById("plazo").value);
             var factorPago = tipoPago === "quincenal" ? 2 : 1;
-            var montoPendiente = montoTotal / (factorPago * plazo);
+            var cuota = montoTotal / (factorPago * plazo);
 
-            if (isNaN(montoPendiente)) {
-                document.getElementById("monto_pendiente").value = "";
+            if (isNaN(cuota)) {
+                document.getElementById("cuota").value = "";
             } else {
-                document.getElementById("monto_pendiente").value = montoPendiente.toFixed(2);
+                document.getElementById("cuota").value = cuota.toFixed(2);
             }
         }
 
@@ -504,6 +510,25 @@ function generarNumeroCredito($conn)
             recalcularMontoPendiente();
         }
 
+        // Calcular el monto pendiente según el monto y el interés seleccionado
+        document.getElementById("monto").addEventListener("input", recalcularMontoTotal2);
+        document.getElementById("interes").addEventListener("change", recalcularMontoTotal2);
+
+        function recalcularMontoTotal2() {
+            var monto = parseFloat(document.getElementById("monto").value);
+            var interes = parseFloat(document.getElementById("interes").value);
+            var montoTotal = monto * interes || 0; // Asegurarse de que el resultado sea un número válido
+            var montoFinal = monto + montoTotal;
+
+            if (isNaN(montoFinal)) {
+                document.getElementById("monto_pendiente").value = "";
+            } else {
+                document.getElementById("monto_pendiente").value = montoFinal.toFixed(2);
+            }
+
+            // Llamar a la función recalcularMontoPendiente para actualizar el monto pendiente
+            recalcularMontoPendiente();
+        }
 
         // Calcular la fecha de finalización y los montos al cargar la página
         calculateFechaFin();
@@ -557,6 +582,10 @@ function generarNumeroCredito($conn)
                 {
                     header: 'Monto Total',
                     key: 'monto_total'
+                },
+                {
+                    header: 'Cuota',
+                    key: 'cuota'
                 },
                 {
                     header: 'Monto Pendiente',

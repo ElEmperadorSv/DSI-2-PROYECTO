@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-11-2023 a las 05:34:12
+-- Tiempo de generación: 03-11-2023 a las 04:32:46
 -- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Versión de PHP: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -96,6 +96,7 @@ CREATE TABLE `creditos_dsi` (
   `interes` decimal(10,2) NOT NULL,
   `plazo` int(11) NOT NULL,
   `monto_total` decimal(10,2) NOT NULL,
+  `cuota` decimal(10,2) NOT NULL,
   `monto_pendiente` decimal(10,2) NOT NULL,
   `tipo_pago` enum('Mensual','Quincenal','','') NOT NULL DEFAULT 'Mensual',
   `fecha_ini` date NOT NULL,
@@ -107,11 +108,13 @@ CREATE TABLE `creditos_dsi` (
 -- Volcado de datos para la tabla `creditos_dsi`
 --
 
-INSERT INTO `creditos_dsi` (`id`, `dui_ct`, `cliente`, `num_credito`, `producto`, `cantidad_producto`, `monto`, `interes`, `plazo`, `monto_total`, `monto_pendiente`, `tipo_pago`, `fecha_ini`, `fecha_fin`, `estado_credito`) VALUES
-(8, 123456789, 'Jorge Lopez', 'DSI-00008', 'Ropero', 1, 100.00, 0.05, 1, 105.00, 105.00, 'Quincenal', '2023-09-21', '2023-10-21', 'FINALIZADO'),
-(9, 330604452, 'Dennys Garcia', 'DSI-00009', 'Escritorio', 1, 100.00, 0.03, 3, 103.00, 34.33, 'Mensual', '2023-08-24', '0000-00-00', 'ACTIVO'),
-(10, 330604452, 'Dennys Garcia', 'DSI-00010', 'Escritorio', 2, 100.00, 0.03, 3, 103.00, 0.00, 'Mensual', '2023-09-24', '23/12/2023', 'FINALIZADO'),
-(12, 123456789, 'Jorge Lopez', 'DSI-00011', 'Sillon addz', 1, 100.00, 0.03, 3, 103.00, 34.33, 'Mensual', '2023-10-30', '29/01/2024', 'ACTIVO');
+INSERT INTO `creditos_dsi` (`id`, `dui_ct`, `cliente`, `num_credito`, `producto`, `cantidad_producto`, `monto`, `interes`, `plazo`, `monto_total`, `cuota`, `monto_pendiente`, `tipo_pago`, `fecha_ini`, `fecha_fin`, `estado_credito`) VALUES
+(8, 123456789, 'Jorge Lopez', 'DSI-00008', 'Ropero', 1, 100.00, 0.05, 1, 105.00, 0.00, 105.00, 'Quincenal', '2023-09-21', '2023-10-21', 'FINALIZADO'),
+(9, 330604452, 'Dennys Garcia', 'DSI-00009', 'Escritorio', 1, 100.00, 0.03, 3, 103.00, 0.00, 34.33, 'Mensual', '2023-08-24', '0000-00-00', 'ACTIVO'),
+(10, 330604452, 'Dennys Garcia', 'DSI-00010', 'Escritorio', 2, 100.00, 0.03, 3, 103.00, 0.00, 0.00, 'Mensual', '2023-09-24', '23/12/2023', 'FINALIZADO'),
+(12, 123456789, 'Jorge Lopez', 'DSI-00011', 'Sillon addz', 1, 100.00, 0.03, 3, 103.00, 0.00, 0.00, 'Mensual', '2023-10-30', '29/01/2024', 'FINALIZADO'),
+(13, 293060489, 'Antonio L. Rivera', 'DSI-00013', 'PRUEBA', 1, 150.00, 0.03, 6, 154.50, 25.75, -25.75, 'Mensual', '2023-11-02', '01/05/2024', 'ACTIVO'),
+(14, 330604452, 'Dennys Garcia', 'DSI-00014', 'Ropero', 1, 180.00, 0.03, 6, 185.40, 15.45, 15.45, 'Quincenal', '2023-11-02', '01/05/2024', 'ACTIVO');
 
 --
 -- Disparadores `creditos_dsi`
@@ -133,8 +136,9 @@ DELIMITER ;
 
 CREATE TABLE `pagos_dsi` (
   `id_pago` int(11) NOT NULL,
-  `num_credito` varchar(20) NOT NULL,
-  `cuota` int(4) NOT NULL,
+  `num_credito` varchar(10) NOT NULL,
+  `dui_cliente` int(11) NOT NULL,
+  `nombre_cliente` varchar(60) NOT NULL,
   `fecha_pago` date NOT NULL,
   `monto_pago` decimal(10,2) NOT NULL,
   `estado_pago` enum('PENDIENTE','REALIZADO','EN MORA') NOT NULL DEFAULT 'PENDIENTE'
@@ -144,17 +148,26 @@ CREATE TABLE `pagos_dsi` (
 -- Volcado de datos para la tabla `pagos_dsi`
 --
 
-INSERT INTO `pagos_dsi` (`id_pago`, `num_credito`, `cuota`, `fecha_pago`, `monto_pago`, `estado_pago`) VALUES
-(1, 'DSI-00008', 0, '2023-06-13', 116.57, ''),
-(2, 'DSI-00008', 0, '2023-06-13', 116.67, ''),
-(3, 'DSI-00008', 0, '2023-06-13', 116.67, ''),
-(4, 'DSI-00008', 0, '2023-06-13', 116.67, ''),
-(5, 'DSI-00008', 0, '2023-06-13', 103.00, ''),
-(6, 'DSI-00008', 0, '2023-06-14', 262.50, ''),
-(7, 'DSI-00008', 0, '2023-06-14', 262.50, ''),
-(8, 'DSI-00008', 0, '2023-06-13', 262.50, ''),
-(9, 'DSI-00008', 0, '2023-06-15', 62.50, ''),
-(10, 'DSI-00008', 0, '2023-06-15', 25.75, '');
+INSERT INTO `pagos_dsi` (`id_pago`, `num_credito`, `dui_cliente`, `nombre_cliente`, `fecha_pago`, `monto_pago`, `estado_pago`) VALUES
+(1, 'DSI-00013', 293060489, 'Antonio L. Rivera', '2023-11-02', 25.75, 'REALIZADO'),
+(2, 'DSI-00011', 123456789, 'Jorge Lopez', '2023-11-02', 0.00, 'REALIZADO'),
+(3, 'DSI-00011', 123456789, 'Jorge Lopez', '2023-11-02', 0.00, 'REALIZADO'),
+(4, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO'),
+(5, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO'),
+(6, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO'),
+(7, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO'),
+(8, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO'),
+(9, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO'),
+(10, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO'),
+(11, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO'),
+(12, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO'),
+(13, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO'),
+(14, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-03', 15.45, 'PENDIENTE'),
+(15, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-01', 15.45, 'REALIZADO'),
+(16, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO'),
+(17, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-10-31', 15.45, 'EN MORA'),
+(18, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO'),
+(19, 'DSI-00014', 330604452, 'Dennys Garcia', '2023-11-02', 15.45, 'REALIZADO');
 
 -- --------------------------------------------------------
 
@@ -178,9 +191,9 @@ CREATE TABLE `productos_dsi` (
 --
 
 INSERT INTO `productos_dsi` (`id_pd`, `nombre_pd`, `descripcion_pd`, `stock_pd`, `categoria_pd`, `precio_pd`, `estado_pd`, `imagen`) VALUES
-(1, 'Ropero', 'Almacenar Ropa', 3, 'Sala', 100.00, 'ACTIVO', '../Complementos/Imagenes/ropero2.jpeg'),
-(2, 'PRUEBA', 'ds', 1, 'Dormitorio', 0.00, 'ACTIVO', '../Complementos/Imagenes/ESCRITORIO.jpg'),
-(3, 'Escritorio', 'PRUEBA', 1, 'Oficina', 100.89, 'ACTIVO', '../Complementos/Imagenes/ESCRITORIO.jpg'),
+(1, 'Ropero', 'Almacenar Ropa', 2, 'Sala', 100.00, 'ACTIVO', '../Complementos/Imagenes/ropero2.jpeg'),
+(2, 'PRUEBA', 'ds', 0, 'Dormitorio', 0.00, 'INACTIVO', '../Complementos/Imagenes/ESCRITORIO.jpg'),
+(3, 'Escritorio', 'PRUEBA', 0, 'Oficina', 100.89, 'INACTIVO', '../Complementos/Imagenes/ESCRITORIO.jpg'),
 (9, 'PS5', 'Consola de Juegos', 1, 'Dormitorio', 50.00, 'ACTIVO', '../Complementos/Imagenes/PS5.jpg'),
 (10, 'Sillon addz', 'Prueba Sillon addz', 0, 'Comedor', 100.00, 'INACTIVO', '../Complementos/Imagenes/prueba.png');
 
@@ -361,11 +374,8 @@ ALTER TABLE `creditos_dsi`
 --
 ALTER TABLE `pagos_dsi`
   ADD PRIMARY KEY (`id_pago`),
-  ADD KEY `num_credito` (`num_credito`),
-  ADD KEY `cuota` (`cuota`),
-  ADD KEY `fecha_pago` (`fecha_pago`),
-  ADD KEY `monto_pago` (`monto_pago`),
-  ADD KEY `estado_pago` (`estado_pago`);
+  ADD KEY `fk_num_credito` (`num_credito`),
+  ADD KEY `fk_dui_cliente` (`dui_cliente`);
 
 --
 -- Indices de la tabla `productos_dsi`
@@ -433,13 +443,13 @@ ALTER TABLE `clientes_dsi`
 -- AUTO_INCREMENT de la tabla `creditos_dsi`
 --
 ALTER TABLE `creditos_dsi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `pagos_dsi`
 --
 ALTER TABLE `pagos_dsi`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `productos_dsi`
@@ -487,7 +497,8 @@ ALTER TABLE `creditos_dsi`
 -- Filtros para la tabla `pagos_dsi`
 --
 ALTER TABLE `pagos_dsi`
-  ADD CONSTRAINT `pagos_dsi_ibfk_1` FOREIGN KEY (`num_credito`) REFERENCES `creditos_dsi` (`num_credito`);
+  ADD CONSTRAINT `fk_dui_cliente` FOREIGN KEY (`dui_cliente`) REFERENCES `clientes_dsi` (`dui_ct`),
+  ADD CONSTRAINT `fk_num_credito` FOREIGN KEY (`num_credito`) REFERENCES `creditos_dsi` (`num_credito`);
 
 --
 -- Filtros para la tabla `productos_dsi`

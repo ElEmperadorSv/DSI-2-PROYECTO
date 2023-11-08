@@ -52,22 +52,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function send($mail, $code)
 {
     $email = new \SendGrid\Mail\Mail();
-    $email->setFrom("gb15026@ues.edu.sv", "Equipo Desarrollo");
+    $email->setFrom("DSI_ONE@ues.edu.sv", "Equipo Desarrollo");
     $email->setSubject("Correo de Recuperacion");
     $email->addTo($mail, "User");
     $email->addContent(
         "text/html",
         "
-        <p>Usa el siguiente codigo para recuperar tu clave</p>
+        <p>Usa el siguiente código para recuperar tu clave</p>
         <br>
         <strong>$code</strong>
         "
     );
     $sendgrid = new \SendGrid('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');
+    
+
     try {
         $response = $sendgrid->send($email);
-        return $response->statusCode();
+
+        if ($response->statusCode() === 202) {
+            return 'Correo enviado con éxito';
+        } else {
+            return 'Error en el envío del correo: ' . $response->statusCode() . ' - ' . $response->body();
+        }
     } catch (Exception $e) {
-        return 'Caught exception: ' . $e->getMessage();
+        return 'Excepción atrapada: ' . $e->getMessage();
     }
 }
+

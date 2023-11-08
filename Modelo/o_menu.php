@@ -50,12 +50,14 @@
                         Gestionar Roles
                     </a>
 
-                    <!-- Gestionar Menus -->
+                    <!-- Gestionar Menus 
 
                     <a class="nav-link" href="../Vista/admin_menus.php">
                         <div class="sb-nav-link-icon"><i class="fas fa-chalkboard-teacher"></i></div>
                         Gestionar Menús
                     </a>
+
+                    -->
 
                     <!-- Gestionar Productos -->
 
@@ -73,13 +75,18 @@
                     </a>
 
                     <!-- Gestionar Creditos -->
-                    <div class="sb-sidenav-menu-heading">Operaciones</div>
                     <a class="nav-link" href="../Vista/../Vista/ba_crear_credito.php">
                         <div class="sb-nav-link-icon"><i class="fas fa-file-invoice-dollar"></i></div>
                         Gestionar Créditos
                     </a>
 
-                    <!-- Gestionar Pagos -->
+                    <!-- Gestionar Pagos  -->
+                    <a class="nav-link" href="../Vista/gestion_pagos.php">
+                        <div class="sb-nav-link-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                        Realizar Pago
+                    </a>
+
+                    <!-- Gestionar Pagos 
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePagos" aria-expanded="false" aria-controls="collapsePagos">
                         <div class="sb-nav-link-icon"><i class="fas fa-hand-holding-usd"></i></div>
                         Gestionar Pagos
@@ -92,8 +99,10 @@
                             <a class="nav-link" href="../Vista/cc_pagos_enmora.php">Pagos en Mora</a>
                         </nav>
                     </div>
+                    -->
 
                     <!-- Reportes -->
+                    <!--  -->
                     <div class="sb-sidenav-menu-heading">Reportes</div>
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseReportes" aria-expanded="false" aria-controls="collapseReportes">
                         <div class="sb-nav-link-icon"><i class="fas fa-money-check-alt"></i></div>
@@ -102,10 +111,10 @@
                     </a>
                     <div class="collapse" id="collapseReportes" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="../Vista/ct_crear_cliente.php">Clientes Inscritos</a>
-                            <a class="nav-link" href="../Vista/ct_crear_cliente.php">Créditos Activos</a>
+                            <a class="nav-link" href="../Vista/ac_consultar_clientes.php">Clientes Inscritos</a>
+                            <!--<a class="nav-link" href="../Vista/ct_crear_cliente.php">Créditos Activos</a>-->
                             <a class="nav-link" href="../Vista/ct_crear_cliente.php">Pagos Pendientes</a>
-                            <a class="nav-link" href="../Vista/ct_crear_cliente.php">Pagos en Mora</a>
+                            <!--<a class="nav-link" href="../Vista/ct_crear_cliente.php">Pagos en Mora</a>-->
                         </nav>
                     </div>
 
